@@ -116,7 +116,6 @@ b = d
 --first (swap, uflip)
 
 {-
-
 first :: ((a,b) -> (b,a) , ((b,a) -> c) -> ((a,b) -> c)) -> (a,b) -> (b,a)
 (swap, uflip) :: ((a,b) -> (b,a) , ((b,a) -> c) -> ((a,b) -> c))
 ----------------
@@ -126,13 +125,50 @@ d = (a,b) -> (b,a)
 e = ((b,a) -> c) -> ((a,b) -> c)
 -}
 
-twice doble
+{-
+twice :: (Int -> Int) -> (Int -> Int)
+doble :: Int -> Int
+-----------------------------------
+twice doble :: (Int -> Int)
+-}
 
-twice doble
 
+{-
+twice :: ((a -> a) -> (a -> a)) -> ((a -> a) -> (a -> a))
+twice :: (a -> a) -> (a -> a)
+-------------------------
+twice twice :: (a -> a) -> (a -> a)
 
--- d. twice twice
--- e. twice uflip
+-}
+
+{-
+paso 1:
+twice :: (d -> d) -> (d -> d)
+uflip :: ((b, a) -> c) -> ((a, b) -> c) 
+-------------------------
+twice uflip :: ...
+
+d = (b, a) -> c
+d = (a, b) -> c
+
+(b, a) -> c = (a, b) -> c
+--por transitividad: (b, a) = (a, b) 
+                     a = b
+                     (a,a) = (a,a)
+
+paso 2: Reemplazo "d" según paso 1
+twice :: ((b, a) -> c) -> (b, a) -> c)) -> ((b, a) -> c) -> (b, a) -> c))
+uflip :: ((b, a) -> c) -> ((a, b) -> c) 
+-------------------------
+twice uflip :: ...
+
+paso 3: Reemplazo "b" por la "a"
+twice :: ((a, a) -> c) -> (a, a) -> c)) -> ((a, a) -> c) -> (a, a) -> c))
+uflip :: ((a, a) -> c) -> ((a, a) -> c) 
+-------------------------
+twice uflip :: ((a, a) -> c) -> ((a, a) -> c)
+
+-}
 -- f. twice swap
 -- g. uflip swap
 -- h. (twice twice) swap
