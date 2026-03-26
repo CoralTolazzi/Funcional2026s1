@@ -214,5 +214,21 @@ uflip swap :: (b, a) -> (b,a)
 
 -}
 
--- g. uflip swap
--- h. (twice twice) swap
+{-
+paso 1
+twice twice :: (a -> a) -> (a -> a)
+swap :: (c,b) -> (b,c)
+--------------------
+(twice twice) swap :: 
+
+a = (c,b)
+a = (b,c)
+c = b
+paso 2
+
+twice twice :: ((c,c) -> (c,c)) -> ((c,c) -> (c,c))
+swap :: (c,c) -> (c,c)
+--------------------
+(twice twice) swap :: (c,c) -> (c,c)
+
+-}
