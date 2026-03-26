@@ -169,6 +169,50 @@ uflip :: ((a, a) -> c) -> ((a, a) -> c)
 twice uflip :: ((a, a) -> c) -> ((a, a) -> c)
 
 -}
--- f. twice swap
+
+{-
+paso 1 
+twice :: (c -> c) -> (c -> c)
+swap :: (a,b) -> (b,a)
+-----------------------
+twice swap :: 
+
+c = (a,b)
+c = (b,a)
+b = a
+
+paso 2
+twice :: ((a,a) -> (a,a)) -> ((a,a) -> (a,a))
+swap :: (a,a) -> (a,a)
+-----------------------
+twice swap :: (a,a) -> (a,a)
+-}
+
+{-
+paso 1
+uflip :: ((c, e) -> d) -> ((e, c) -> d) 
+swap :: (a,b) -> (b,a)
+--------------------------------------------
+uflip swap ::  
+
+(c, e) -> d = (a,b) -> (b,a)
+
+d = (b,a)
+(c, e) = (a,b)
+Para que sean igual tiene que coincidir sus componentes
+c = a
+e = b
+
+paso 2
+uflip :: ((a,b) -> (b,a)) -> ((b, a) -> (b,a)) 
+swap :: (a,b) -> (b,a)
+--------------------------------------------
+uflip swap :: (b, a) -> (b,a) 
+
+
+
+
+-}
+
 -- g. uflip swap
 -- h. (twice twice) swap
