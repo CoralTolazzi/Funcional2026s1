@@ -232,3 +232,200 @@ swap :: (c,c) -> (c,c)
 (twice twice) swap :: (c,c) -> (c,c)
 
 -}
+
+{-
+const x = g
+    where g y = x
+
+const :: b -> (a -> b)
+x :: b
+-------------
+const x :: a -> b
+
+g :: a -> b
+y :: a
+----------------
+g y :: b
+-}
+
+{-
+appDup f = g
+    where g x = f (x, x)
+
+appDup :: ((a,a) -> b) -> (a -> b)
+f :: (a,a) -> b
+-----------------------------
+appDup f :: a -> b
+
+
+g :: a -> b
+x :: a
+--------------------
+g x :: b
+
+f :: (a,a) -> b
+(x,x) :: (a,a)
+--------------------
+f (x,x) :: b
+-}
+
+{-
+appFork (f, g) = h
+    where h x = (f x, g x)
+
+appFork :: (a -> c, a -> b) -> (a -> (c,b))
+(f, g) :: (a -> c, a -> b)
+--------------------------
+appFork (f, g) :: a -> (c,b)
+
+h :: a -> (c,b)
+x :: a
+------------------------
+h x :: (c,b)
+
+f :: a -> c
+x :: a
+---------------------
+f x :: c
+
+g :: a -> b
+x :: a
+---------------------
+g x :: b
+-}
+
+
+{-
+appPar (f, g) = h
+    where h (x, y) = (f x, g y)
+
+appPar ::  (c -> d, a -> b ) -> ((c,a) -> (d,b))
+(f, g) :: (c -> d, a -> b )
+-------------------
+appPar (f, g) :: (c,a) -> (d,b)
+
+h  :: (c,a) -> (d,b)
+(x, y) :: (c,a)
+--------------------------
+h (x, y) :: (d,b)
+
+
+f :: c -> d
+x :: c
+---------------
+f x :: d
+
+g :: a -> b
+y :: a 
+------------------
+g y :: b
+-}
+
+{-
+appDist f = g
+    where g (x, y) = (f x, f y)
+
+appDist :: (a -> b) -> ((a,b) -> (b,b))
+f :: a -> b
+-----------------------
+appDist f :: (a,b) -> (b,b)
+
+
+g :: (a,b) -> (b,b)
+(x, y) :: (a,a)
+-----------------------
+g (x,y) :: (b,b)
+
+f :: a -> b
+x :: a
+------------
+f x :: b
+
+f :: a -> b
+y :: a
+------------
+f y :: b
+-}
+
+
+--flip f = h
+--    where h x = k
+--        where k y = (f y) x
+
+
+{-
+flip :: (c -> d) -> (c -> (a -> d))
+f :: c -> d 
+---------------
+flip f :: c -> (a -> d)
+
+h :: c -> (a -> d)
+x :: c
+---------------
+h x :: a -> d
+
+k :: a -> d
+y :: a
+-------------
+k y :: d
+
+
+f y :: c -> d
+x :: c
+-----------
+(f y) x :: d
+
+... -> ... = b
+c -> d = b
+
+
+f :: a -> (c -> d)
+y :: a
+-----------------
+f y :: c -> d
+-}
+
+subst f = h
+    where h g = k  where k x = (f x) (g x)
+
+{-
+subst f = h
+    where h g = k
+        where k x = (f x) (g x)
+ 
+subst :: ( a -> (c -> d)) -> ((a -> c) -> (a -> d))
+f :: a -> (c -> d)
+------------------
+subst f :: (a -> c) -> (a -> d)
+
+h :: (a -> c) -> (a -> d)
+g :: a -> c
+-----------
+h g :: a -> d
+
+
+k :: a -> d
+x :: a
+----------
+k x :: d
+
+f x :: c -> d
+g x :: c
+------------------
+(f x) (g x) :: d
+
+
+f :: a -> (c -> d)
+x :: a 
+----------
+f x :: c -> d
+
+g :: a -> c
+x :: a
+-------------
+g x :: c
+
+
+
+-}
+
