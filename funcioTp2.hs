@@ -146,7 +146,7 @@ paso 1:
 twice :: (d -> d) -> (d -> d)
 uflip :: ((b, a) -> c) -> ((a, b) -> c) 
 -------------------------
-twice uflip :: ...
+twice uflip :: 
 
 d = (b, a) -> c
 d = (a, b) -> c
@@ -221,11 +221,12 @@ swap :: (c,b) -> (b,c)
 --------------------
 (twice twice) swap :: 
 
+a -> a = (c,b) -> (b,c)
 a = (c,b)
 a = (b,c)
 c = b
-paso 2
 
+paso 2
 twice twice :: ((c,c) -> (c,c)) -> ((c,c) -> (c,c))
 swap :: (c,c) -> (c,c)
 --------------------
@@ -424,8 +425,330 @@ g :: a -> c
 x :: a
 -------------
 g x :: c
+-}
+{-
+Ejercicio 4) Para cada una de las siguientes expresiones decidir si poseen tipo. Si es
+así indicar cuál es.
+
+a. 1 && 2 == 2
+No tiene tipo
+
+b. 1 + if 3 < 5 then 3 else 5
+Tiene tipo Int
+
+c. let par = (True, 4)
+in (if first par then first par else second par)
+No tiene tipo
+
+d. (doble doble) 5
+No tiene Tipo
+
+e. doble (doble 5)
+Tiene tipo Int
+
+f. twice first 
+
+twice :: (c -> c) -> (c -> c)
+first :: (a,b) -> a
+-------------------------
+twice first ::
+
+c -> c = (a,b) -> a
+
+c = (a,b)
+c = a
+(a,b) = a
+MEH No Tipa porque empieza a ser infinito
 
 
+g. (twice doble) doble 
+
+Por esto: 
+twice doble :: Int -> Int
+doble :: Int -> Int
+------------------
+(twice doble) doble :: 
+
+twice :: (Int -> Int) -> (Int -> Int)
+doble :: Int -> Int
+------------------
+twice doble :: Int -> Int
+
+Int -> Int = c -> c
+c = Int
+MEH No Tipa porque empieza a ser infinito
+
+
+h.(twice twice) first
+
+twice twice :: (a -> a) -> (a -> a)
+first :: (c,b) -> c
+-----------------------------------
+(twice twice) first :: 
+
+a -> a = (c,b) -> c
+a = (c,b)
+a = c
+Por Transitividad:
+(c,b) = c
+((((c,b),b)),b) = c
+No tipa, otra vez Infinito como los anteriores
+
+i. apply apply
+
+apply :: ((c -> d) -> (c -> d)) -> ((c -> d) -> (c -> d))
+apply :: (c -> d) -> (c -> d)
+------------------------------
+apply apply :: (c -> d) -> (c -> d)
+
+(c -> d) -> (c -> d) = a -> b
+
+a = (c -> d)
+b = (c -> d)
+a = b
+Si tiene tipo (c -> d) -> (c -> d)
+-}
+{-
+Ejercicio 5) Dar dos ejemplos de expresiones que tengan cada uno de los siguientes
+tipos:
+a. Bool = True; False
+b. (Int, Int) = (1,2); (2,1)
+c. Char -> Int  = 
+\c -> 1
+\c -> 4
+d. (Int, Char) -> Bool =
+\(x,y) -> True
+\(x,y) -> False
+e. (Int -> Int) -> Int
+\(x,y) -> 1
+\(x,y) -> 2
+f. (Bool -> Bool, Int)
+(\b -> False, 1)
+(\b -> True, 2)
+g. a -> Bool
+\x -> True
+\x -> False
+-}
+
+{-
+Ejercicio 6) Para cada una de las siguientes expresiones, decir a cuál función del
+ejercicio 3 es equivalente. Ofrecer argumentos de por qué son equivalentes.
+a. \p -> let (f, g) = p
+    in \x -> (f x, g x)
+
+h es la funcion anónima principal
+k es una funcion anonima
+
+h :: (a -> c, a -> b) -> (a -> (c,b))
+(f,g) :: (a -> c, a -> b)
+---------------
+h (f,g) :: a -> (c,b)
+
+k :: a -> (c,b)
+x :: a
+----------------
+k x :: (c,b)
+
+f :: a -> c
+x :: a
+---------------
+f x :: c
+
+g :: a -> b
+x :: a
+----------------
+g x :: b
+
+SON IGUALES!!!!
+
+
+appFork :: (a -> c, a -> b) -> (a -> (c,b))
+appFork (f, g) = h
+    where h x = (f x, g x)
+
+
+b. \f -> (\g -> (\x -> f x (g x)))
+
+
+la principal funcion anonima se denomina k
+k: \f -> (\g -> (\x -> f x (g x))
+j: \g -> (\x -> f x (g x))
+h: \x -> f x (g x)
+
+
+
+
+subst :: (a -> (c -> d)) -> ((a -> c) -> (a -> d))
+
+=
+
+k :: (a -> (b -> d)) -> ((a -> b) -> (a -> d))
+f :: a -> (b -> d)
+----------
+k f :: (a -> b) -> (a -> d)
+
+j :: (a -> b) -> (a -> d)
+g :: a -> b
+----------
+j g :: a -> d
+
+h :: a -> d
+x :: a
+---------
+h x :: d
+
+f x :: b -> d
+g x :: b
+---------------------
+f x (g x) :: d
+
+c = b -> d
+
+f :: a -> (b -> d)
+x :: a
+-----------
+f x :: b -> d
+
+g :: a -> b
+x :: a
+----------
+g x :: b
+
+
+c. \f -> (\x -> (\y -> (f y) x))
+
+flip = \f -> (\x -> (\y -> (f y) x))
+flip f = \x -> (\y -> (f y) x)
+flip f x = \y -> (f y) x
+flip f x y = (f y) x
+
+
+d. \f -> (\px -> let (x, y) = px
+    in (f x, f y))
+
+appDist = \f -> (\px -> let (x, y) = px in (f x, f y))
+appDist f = \px -> let (x, y) = px in (f x, f y)
+appDist f px = let (x, y) = px in (f x, f y)
+appDist f (x,y) = (f x, f y)
+
+=
+
+appDist :: (a -> b) -> ((a,b) -> (b,b))
+
+
+e. \x -> (\y -> x)
+f x = \y -> x
+f x y = x
+
+=
+
+const :: b -> (a -> b)
+const x y = x
+
+
+f. \pf -> let (f, g) = pf
+    in \px -> let (x, y) = px
+    in (f x, g y)
+
+
+f = \pf -> let (f, g) = pf in \px -> let (x, y) = px in (f x, g y)
+f (f, g) (x, y) = (f x, g y)
+
+=
+
+appFork :: (a -> c, a -> b) -> (a -> (c,b))
+appFork (f, g) x = (f x, g x)
+
+g. \f -> (\x -> f (x, x))
+fun =\f -> (\x -> f (x, x))
+fun f = \x -> f (x, x)
+fun f x = f (x, x)
+
+=
+
+appDup :: ((a,a) -> b) -> (a -> b)
+appDup f x = f (x, x)
 
 -}
 
+{-
+Ejercicio 7) Encontrar cuales de estas expresiones son equivalentes entre sí.
+Sugerencia: utilizar funciones anónimas es una forma interesante de encontrar
+equivalencias entre expresiones que denotan funciones.
+
+a. appFork (id,id)
+
+(\(f, g) -> \x -> (f x, g x)) (id,id)
+\x -> (id x, id x)
+\x -> (x, x)
+
+-------------------------------------
+b. \f -> appDup (appDist f) = ?
+
+appDup = \g -> \k -> g (k, k)
+appDist = \h -> \(x,y) -> (h x, h y)
+
+\f -> appDup (appDist f)
+\f -> (\g -> \k -> g (k, k)) (appDist f)
+\f -> \k -> (appDist f) (k, k)
+\f -> \k -> ((\h -> \(x,y) -> (h x, h y)) f) (k, k)
+\f -> \k -> (\(x,y) -> (f x, f y)) (k, k)
+\f -> \k -> (f k, f k)
+
+\f -> \x -> (f x, f x)
+
+----------------------------------------------
+c. appDup id
+
+f x = f (x, x)
+
+appDup = \g -> \k -> g (k, k)
+\k -> id (k, k)
+\x -> id (x, x)
+\x -> (x, x)
+
+------------------------------------------
+d. appDup appFork
+
+appDup = \g -> \k -> g (k, k)
+appFork = \(f, h) -> \x -> (f x, h x)
+
+(\g -> \k -> g (k, k)) appFork
+\k -> appFork (k, k)
+\k -> (\(f, h) -> \x -> (f x, h x)) (k, k)
+\k -> (\x -> (k x, k x))
+
+---------------------------------------
+e. flip (appDup const)
+
+flip = \f -> \h -> \y -> (f y) h
+const = \j -> \l -> j
+appDup = \g -> \k -> g (k, k)
+
+(\f -> \h -> \y -> (f y) h) (appDup const)
+(\f -> \h -> \y -> (f y) h) ((\g -> \k -> g (k, k)) const)
+(\f -> \h -> \y -> (f y) h) (\k -> const (k, k))
+(\f -> \h -> \y -> (f y) h) (\k -> (\j -> \l -> j) (k, k))
+(\f -> \h -> \y -> (f y) h) (\k -> (\l -> (k, k)))
+\h -> \y -> ((\k -> (\l -> (k, k))) y) h)
+\h -> \y -> ((\l -> (y, y)) h)
+\h -> \y -> (y, y)
+------------------------------------------
+f. const (appDup id)
+
+const = \j -> \l -> j
+appDup = \g -> \k -> g (k, k)
+
+(\j -> \l -> j) ((\g -> \k -> g (k, k)) id)
+(\j -> \l -> j) (\k -> id (k, k))
+(\j -> \l -> j) (\k -> (k, k))
+\l -> (\k -> (k, k))
+------------------------------------------
+
+RESPUESTA:
+a = c
+b = d
+e = f
+
+
+-}
