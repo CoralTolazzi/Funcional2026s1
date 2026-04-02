@@ -82,65 +82,62 @@ d1 = (\f -> f 2 + f 4) (const 21)
 -- 21 + 21
 -- 42
 
+
 -- 2)
 a2 = (suma 2) 3
-\x -> \y -> x + y 
-2 + 3
-5 
-
+-- \x -> \y -> x + y 
+-- 2 + 3
+-- 5 
 
 b2 = ((subst const) suma) 17
-
-(((\f -> \g -> \x -> (f x) (g x)) (\z -> \w -> z)) (\y -> \p -> y + p)) 17
-(((\g -> \x -> ((\z -> \w -> z) x) (g x))) (\y -> \p -> y + p)) 17
-((\g -> \x -> ((\w -> x) (g x))) (\y -> \p -> y + p)) 17
-((\g -> \x -> (g x)) (\y -> \p -> y + p)) 17
-(\x -> (\y -> \p -> y + p x)) 17
-\y -> \p -> y + p 17
-
+-- (((\f -> \g -> \x -> (f x) (g x)) const) suma) 17
+-- ((\g -> \x -> (const x) (g x)) suma) 17
+-- ((\x -> (const x) (suma x)) 17
+-- (((const 17) (suma 17))
+-- 17 
 
 c2 = ((subst const) twice) doble
-
-((\g -> \x -> (g x)) (\f -> \y -> f (f y))) \
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+-- (((\f -> \g -> \x -> (f x) (g x)) const) twice) doble
+-- ((\g -> \x -> (const x) (g x)) twice) doble
+-- ((\g -> \x -> x) twice) doble
+-- (\x -> x) doble
+-- doble
 
 
 -- 3) A partir de las reducciones anteriores, calcular expresiones equivalentes para
-a3 = ((subst const) suma)
-b3 = \f -> (subst const) f
+a3 = ((subst const) suma) = \x -> (\y -> \p -> y + p x)
 
+b3 = \f -> (subst const) f = \f -> (\x -> x)
 
 -- 4) Dar expresiones equivalentes que nombren a las funciones definidas
-a4 = id
-b4 = const
-c4 = flip
+a4 = id = \x -> x
+b4 = const = \x -> \y -> x
+c4 = flip  = \f -> \x -> \y -> (f y) x
 
 
 -- 5) Completar la definición de la función yTambien de forma tal que para todos b1 y b2 ...
 --  (yTambien b1) b2 = b1 && b2
-yTambien :: ...
+yTambien :: 
 yTambien b = if b then ?? else ??
 
+yTambien :: Bool -> (Bool -> Bool)
+yTambien b = f where f b' = if b then b' else b
 
 -- 6) Mostrar reducción de
 ((subst (flip apply)) suma) 17
+((subst ((\f -> \x -> \y -> (f y) x) apply)) suma) 17
+((subst (\x -> \y -> (apply y) x)) suma) 17
+((subst (\x -> \y -> y x)) suma) 17
+(((\h -> \g -> \z -> (h z) (g z)) (\x -> \y -> y x)) suma) 17
+(((\g -> \z -> ((\x -> \y -> y x) z) (g z))) suma) 17
+((\g -> \z -> (\y -> y z) (g z)) suma) 17
+((\g -> \z -> (\y -> y z) (g z)) suma) 17
+((\g -> \z -> g z z) suma) 17
+(\z -> suma z z) 17
+suma 17 17
+34
 
-
+subst = \h -> \g -> \z -> (h z) (g z)
+flip = \f -> \x -> \y -> (f y) x
 -- 7) A partir de la reducción anterior dar una expresión equivalente para
-(subst (flip apply)) suma
-
+(subst (flip apply)) suma = \z -> suma z z

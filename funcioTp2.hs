@@ -210,8 +210,6 @@ swap :: (a,b) -> (b,a)
 uflip swap :: (b, a) -> (b,a) 
 
 
-
-
 -}
 
 {-
@@ -233,7 +231,7 @@ swap :: (c,c) -> (c,c)
 (twice twice) swap :: (c,c) -> (c,c)
 
 -}
-
+--Ejercicio 3)
 {-
 const x = g
     where g y = x
@@ -355,10 +353,14 @@ f y :: b
 
 
 {-
-flip :: (c -> d) -> (c -> (a -> d))
-f :: c -> d 
----------------
-flip f :: c -> (a -> d)
+flip :: (a -> c -> d) -> i -> a -> j
+f :: a -> (c -> d)
+----------------------
+flip f :: i -> a -> j
+
+e -> i -> j = a -> (c -> d)
+e = a 
+i -> j = c -> d
 
 h :: c -> (a -> d)
 x :: c
@@ -370,7 +372,6 @@ y :: a
 -------------
 k y :: d
 
-
 f y :: c -> d
 x :: c
 -----------
@@ -378,7 +379,6 @@ x :: c
 
 ... -> ... = b
 c -> d = b
-
 
 f :: a -> (c -> d)
 y :: a
