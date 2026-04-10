@@ -2,13 +2,13 @@ curry :: ((a,b) -> c) -> a -> b -> c
 curry f x y = f (x,y)
 curry f = g where g x = h where h y = f (x,y)
 
-uncurry :: (a->(b->c)) -> ((a,b)->c)
+uncurry :: (a->(b->c)) -> (a,b)-> (c -> b)
 uncurry f = g where g (x,y) = (f x) y
 uncurry f (x,y) = (f x) y
 
 first :: (a,b) -> a
 first (x,y) = x
-
+izq izq izq :: dere
 doble :: Int -> Int
 doble x = x + x
 
@@ -19,8 +19,8 @@ twice :: (a -> a) -> (a -> a)
 twice f = g
     where g x = f (f x)
 
-
 id :: a -> a
+id x = x
 
 apply :: (a -> b) -> (a -> b)
 apply f = g
@@ -44,19 +44,19 @@ appDist :: (a -> b) -> ((a,b) -> (b,b))
 appDist f = g
     where g (x, y) = (f x, f y)
 
-flip :: (a -> b -> c) -> b -> a -> c
-flip f = h
-    where h x = k
-        where k y = (f y) x
+--flip :: (a -> b -> c) -> b -> a -> c
+--flip f = h
+--    where h x = k
+ --       where k y = (f y) x
 
-subst :: (a -> (c -> d)) -> ((a -> c) -> (a -> d))
-subst f = h
-    where h g = k
-        where k x = (f x) (g x)
+--subst :: (a -> (c -> d)) -> ((a -> c) -> (a -> d))
+--subst f = h
+--    where h g = k
+--        where k x = (f x) (g x)
 
 -- SIN WHERE
 
-
+{-
 compose :: (b -> c) -> (a -> b) -> a -> c
 compose f g x = f (g x)
 
@@ -91,3 +91,4 @@ const :: b -> (a -> b)
 const x y = x
 
 
+-}
