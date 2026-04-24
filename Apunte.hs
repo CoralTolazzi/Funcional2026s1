@@ -2,7 +2,7 @@ curry :: ((a,b) -> c) -> a -> b -> c
 curry f x y = f (x,y)
 curry f = g where g x = h where h y = f (x,y)
 
-uncurry :: (a->(b->c)) -> (a,b)-> (c -> b)
+uncurry :: (a->(b->c)) -> (a,b)-> c 
 uncurry f = g where g (x,y) = (f x) y
 uncurry f (x,y) = (f x) y
 
@@ -57,7 +57,7 @@ appDist f = g
 -- SIN WHERE
 
 {-
-compose :: (b -> c) -> (a -> b) -> a -> c
+compose :: (b -> c) -> (a -> b) -> a -> c   
 compose f g x = f (g x)
 
 twice :: (a -> a) -> (a -> a)

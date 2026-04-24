@@ -109,5 +109,4 @@ doble :: Int -> Int
 (doble .) doble 2 :: Int
 
 
-
 -}

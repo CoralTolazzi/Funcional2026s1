@@ -116,9 +116,9 @@ twice succ = sumarDos
 twice succ 2 = (\x -> x + 1) 3
 twice doble = cuadruple
 
-
-
 -- Realizar la reducción completa de ((twice twice) doble) 3.
+twice :: (a -> a) -> (a -> a)
+twice f x = f (f x)
 
 ((twice twice) doble) 3
 --Def de twice con f <- twice
