@@ -25,30 +25,11 @@ k. chocoHelate (Vasito DulceDeLeche) :: No tipa muajaja
 l. chocoHelate Pote :: Gusto -> Gusto -> Helado
 m. chocoHelate (chocoHelate (Pote Frutilla)) :: Helado
 
-a)
-
-Respuesta 1
-Es un constructor parametrizado para el tipo Helado.
- 
-b)
-
-Respuesta 2
-Es una constante no funcional de tipo Gusto.
- 
-c)
-
-Respuesta 3
-Es un constructor parametrizado para el tipo Helado.
- 
-d)
-
-Respuesta 4
-Es una constante no funcional de tipo Gusto.
- 
-e)
-
-Respuesta 5
-Es un constructor parametrizado para el tipo Helado. 
+a) Es un constructor parametrizado para el tipo Helado. 
+b) Es una constante no funcional de tipo Gusto.
+c) Es un constructor parametrizado para el tipo Helado.
+d) Es una constante no funcional de tipo Gusto.
+e) Es un constructor parametrizado para el tipo Helado. 
 f) Es una función de orden superior que retorna elementos de tipo arbitrario.
 g) Es un elemento del tipo Helado.
 h) Es una función que retorna elementos del tipo Helado. 
@@ -57,11 +38,6 @@ j) Es un elemento del tipo Helado.
 k) No tiene tipo. 
 l) Es una función que retorna elementos del tipo Helado.
 m) Es un elemento del tipo Helado.
- 
-
--}
-
-
 
 -- chocoHelate :: (Gusto -> a) -> a
 -- consH :: Gusto -> a
@@ -75,7 +51,7 @@ m) Es un elemento del tipo Helado.
 
 --Ejercicio 2) Dado el siguiente tipo que pretende representar dígitos binarios
 data DigBin = O | I
-{-
+
 definir las siguientes funciones:
 a. dbAsInt :: DigBin -> Int, que dado un símbolo que representa un
 dígito binario lo transforma en su significado como número.
@@ -246,8 +222,7 @@ h. compose uncurry (Pote Chocolate)
 
 data Shape = Circle Float | Rect Float Float
                 deriving Show
-data Maybe a = Nothing | Just a
-                deriving Show
+
 data Set a = S (a -> Bool)
                
 
@@ -335,9 +310,9 @@ c = (d,h)-> e
 
 g)
 compose :: (b -> c) -> (a -> b) -> a -> c
-Just :: NO TIENE TIPO
+Just :: d -> Maybe d
 ------------------------------------
-compose Just ::
+compose Just ::  (a -> b) -> a -> Maybe b 
 
 h)
 compose :: (b -> c) -> (a -> b) -> a -> c
