@@ -1,3 +1,12 @@
+assoc :: (a,(b,c)) -> ((a,b),c)
+assoc (x,(y,z)) = ((x,y),z)
+appAssoc :: (((a,b),c) -> d) -> (a,(b,c)) -> d
+appAssoc f p = f (assoc p)
+
+many :: Int -> (a -> a) -> a -> a
+many 0 f x = x
+many n f x = f (many (n-1) f x)
+
 curry :: ((a,b) -> c) -> a -> b -> c
 curry f x y = f (x,y)
 curry f = g where g x = h where h y = f (x,y)
@@ -8,7 +17,9 @@ uncurry f (x,y) = (f x) y
 
 first :: (a,b) -> a
 first (x,y) = x
-izq izq izq :: dere
+
+--izq izq izq :: dere --
+
 doble :: Int -> Int
 doble x = x + x
 

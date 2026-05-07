@@ -81,8 +81,11 @@ True
 
 3) Dar algunos elementos de los siguientes tipos
 Par Bool 
+DosCosas True False
 Par Helado
+DosCosas (Vasito Chocolate) (Vasito Chocolate)
 Par (Gusto -> Helado)
+DosCosas (Cucurucho Chocolate) (Cucurucho Frutilla)
 
 4)Dar el tipo de
 DosCosas (Cucurucho DDL)
@@ -99,17 +102,22 @@ esCuadrado (Rect  f1 f2) = f1 == f2
 esCuadrado _ = False 
 
 armarCuadradoAlRecibir :: Float -> (Float -> Shape) -> Bool
-armarCuadradoAlRecibir f1 ffs = esCuadrado (ffs f1)
+armarCuadradoAlRecibir n f = esCuadrado (f n)
 que verifica si la funcion arma un cuadrado al recibir el numero dado  
 
 armarCuadradoDeTamanioCuandoRecibe :: Float -> Float -> (Float -> Shape) -> Bool
-armarCuadradoDeTamanioCuandoRecibe f1 f2 ffs = esCuadrado (armarCuadradoAlRecibir f2 (fss f1))
+armarCuadradoDeTamanioCuandoRecibe f1 f2 ffs = esCuadradoDeTamanio (ffs f2) f1
+
+esCuadradoDeTamanio :: Shape -> Float -> Bool
+esCuadradoDeTamanio (Rect f11 f21) f = (f11 == f21) && f11 == f
+esCuadradoDeTamanio _ _ = False
 que verifica si la funcion dada arma un cuadrado del tamanio del primer numero al 
 recibir el segundo numero 
 
 siempreArmaCuadrado :: (Float -> Shape) -> Bool 
-siempreArmaCuadrado ffs = esCuadrado (\x -> ffs x)
-que verifica si la funcion dada arma un cuadrado de cualquier tamanio cuando recibe cualquier otro numero.
+siempreArmaCuadrado ffs = esCuadrado (shapeNormal ffs)
+que verifica si la funcion dada arma un cuadrado de
+cualquier tamanio cuando recibe cualquier otro numero.
 Para comprobar si esta funcion hace lo esperado, aplicar la funcion definido a
 cuadrado
 Rect 2
@@ -120,4 +128,6 @@ shapeNormal Rect
     else Circle n
 
 -}
+
+
 
