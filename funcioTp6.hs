@@ -1,7 +1,7 @@
 {-Ejercicio 1) Demostrar las siguientes propiedades:
     a. doble = \x -> 2 * x
     Por el principio de extensionalidad. ¿Para todo x. doble n = (\x -> 2 * x) n?
-    Sea n un numero cualquiera. Se verá que ¡doble e = (\x -> 2 * x) e!
+    Sea e un numero cualquiera. Se verá que ¡doble e = (\x -> 2 * x) e!
 
         doble e
     =           (def. doble)
@@ -14,8 +14,8 @@
     doble n = (\x -> 2 * x) n son lo mismo porque partiendo de un lado se puede llegar al otro
 
     b. compose doble doble = cuadruple
-    Por el principio de extensionalidad. Para todo x.  compose doble doble n = cuadruple n
-    Sea n un numero cualquiera. Se verá que que compose doble doble e = cuadruple e
+    Por el principio de extensionalidad. ¿Para todo x.  compose doble doble n = cuadruple n?
+    Sea e un numero cualquiera. Se verá que que compose doble doble e = cuadruple e
 
         compose doble doble e           
     =                            (def. compose)
@@ -34,7 +34,7 @@
 -}  
 {-
 Ejercicio 2) Demostrar las siguientes propiedades:
-    a. para todo x. para todo y. x && y = not ((not x) || (not y))
+    a. ¿para todo x. para todo y. x && y = not ((not x) || (not y))?
         Caso y = False
         Sea b::Bool, se verá que: b && False = not ((not b) || (not False|))
 
@@ -73,7 +73,7 @@ Ejercicio 2) Demostrar las siguientes propiedades:
 
    b && True = not ((not b) || (not True|)) son lo mismo porque partiendo de un lado se puede llegar al otro
 
-    b. para todo x. para todo y. not (x || y) = not x && not y
+    b. ¿para todo x. para todo y. not (x || y) = not x && not y?
 
     Caso y = False
     Sea b::Bool, se verá que: not (b || False) = not b && not False
@@ -111,12 +111,15 @@ Ejercicio 2) Demostrar las siguientes propiedades:
     
     not (b || True) = not b && not True son lo mismo porque partiendo de un lado se puede llegar al otro
 
+
+
+
 -}
 {-
 Ejercicio 3) Demostrar las siguientes propiedades:
     a. curry suma' = suma
-    Por el principio de extensionalidad. Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 
-    Sea n un numero cualquiera. Se verá que que curry suma' a b = suma a b 
+    Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 ?
+    Sea a y b dos numeros cualquiera. Se verá que que curry suma' a b = suma a b 
 
     curry suma' a b
    =                (def de curry)
@@ -128,8 +131,8 @@ Ejercicio 3) Demostrar las siguientes propiedades:
     
     curry suma' a b = suma a b son lo mismo porque partiendo de un lado se puede llegar al otro
     
-Por el principio de extensionalidad. Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 
-Sea n un numero cualquiera. Se verá que uncurry suma (a,b) = suma' (a,b)
+Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 ?
+Sea a y b dos numeros cualquiera. Se verá que uncurry suma (a,b) = suma' (a,b)
     
     uncurry suma (a,b) 
    =                (def de uncurry)
@@ -145,8 +148,8 @@ uncurry suma (a,b) = suma' (a,b) son lo mismo porque partiendo de un lado se pue
 {-
 Ejercicio 4) Demostrar las siguientes propiedades:
 
-Por el principio de extensionalidad. Para todo x Para todo y.  curry fst x y = const x y
-Sea x e y elementos de tipo cualquiera. Se verá que curry fst a b = const a b
+Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry fst x y = const x y?
+Sea a y b elementos de tipo cualquiera. Se verá que curry fst a b = const a b
  
     curry fst a b 
    =                (def de curry)
@@ -159,8 +162,8 @@ Sea x e y elementos de tipo cualquiera. Se verá que curry fst a b = const a b
 curry fst a b = const a b son lo mismo porque partiendo de un lado se puede llegar al otro
 
 
-Por el principio de extensionalidad. Para todo x Para todo y.  uncurry (flip const) (x,y) = snd (x,y) 
- Sea x e y elementos de tipo cualquiera. Se verá que uncurry (flip const) (a,b) = snd (a,b) 
+Por el principio de extensionalidad. ¿Para todo x Para todo y.  uncurry (flip const) (x,y) = snd (x,y)?
+ Sea a y b elementos de tipo cualquiera. Se verá que uncurry (flip const) (a,b) = snd (a,b) 
     
     uncurry (flip const) (a,b)
 =                (def de uncarry)
@@ -180,8 +183,8 @@ uncurry (flip const) (a,b) = snd (a,b) son lo mismo porque partiendo de un lado 
 {-
 Ejercicio 5) Demostrar las siguientes propiedades:
     a. para todo f. curry (uncurry f) = f
-Por el principio de extensionalidad. Para todo x Para todo y. curry (uncurry f) x y  = f x y
-    Sea x e y elementos de tipo cualquiera. Se verá que curry (uncurry f) a b = f a b
+Por el principio de extensionalidad. ¿Para todo x Para todo y. curry (uncurry f) x y  = f x y?
+    Sea a y b elementos de tipo cualquiera. Se verá que curry (uncurry f) a b = f a b
     curry (uncurry f) a b
 =          (def de curry)
     uncurry f (a,b)
@@ -192,8 +195,8 @@ curry (uncurry f) a b = f a b son lo mismo porque partiendo de un lado se puede 
 
 
     b. para todo f'. uncurry (curry f') = f'
-Por el principio de extensionalidad. Para todo x Para todo y. uncurry (curry f') (x,y) = f' (x,y)
-Sea x e y elementos de tipo cualquiera. Se verá que uncurry (curry f') (a,b) = f' (a,b)
+Por el principio de extensionalidad. ¿Para todo x Para todo y. uncurry (curry f') (x,y) = f' (x,y)?
+Sea a y b elementos de tipo cualquiera. Se verá que uncurry (curry f') (a,b) = f' (a,b)
 
     uncurry (curry f') (a,b) 
 =           (def de uncurry)
@@ -215,7 +218,10 @@ para todo f.
 appAssoc (uncurry (uncurry f)) = uncurry (compose uncurry f)
 AYUDA: de necesitar el principio de extensionalidad, considerar usar el argumento
 en la forma (x,(y,z)).
-Sea x y z elementos de tipo cualquiera. Se verá que appAssoc (uncurry (uncurry f)) (a,(b,c)) = uncurry (compose uncurry f) (a,(b,c))
+
+
+ Por el principio de extensionalidad. ¿Para todo f. appAssoc (uncurry (uncurry f))(x,(y,z)) = uncurry (compose uncurry f) (x,(y,z))?
+Sea a b c elementos de tipo cualquiera. Se verá que appAssoc (uncurry (uncurry f)) (a,(b,c)) = uncurry (compose uncurry f) (a,(b,c))
     
     appAssoc (uncurry (uncurry f)) (a,(b,c))
 =                                           (def appAssoc)
@@ -247,6 +253,7 @@ cantidad de parámetros posible:
 
 cuadruple :: Int -> Int
 cuadruple = (doble . doble)
+
 cuadruple x = (doble . doble) x
 cuadruple x = (compose doble doble) x
 cuadruple x = compose doble doble x
@@ -269,8 +276,8 @@ const, id, subst, dup, etc.
 {-
 b. demostrar las siguientes propiedades:
 i. para todo f. para todo g. f . g = compose f g
-Por el principio de extensionalidad. Para todo x. f . g x = compose f g x
-Sea x un elemento de tipo cualquiera. Se verá que  f . g a = compose f g a
+Por el principio de extensionalidad. ¿Para todo x. f . g x = compose f g x?
+Sea a un elemento de tipo cualquiera. Se verá que  f . g a = compose f g a
     (f . g) a
 =              (def (.))
     f (g a)
@@ -282,8 +289,8 @@ f . g a = compose f g a son lo mismo porque partiendo de un lado se puede llegar
 
 
 ii. swap . swap = id
-Por el principio de extensionalidad. Para todo x y para todo y. swap . swap (x,y) = id (x,y)
-Sea x e y elementos de tipo cualquiera. Se verá que  swap . swap (a,b) = id (a,b)
+Por el principio de extensionalidad. ¿Para todo x y para todo y. swap . swap (x,y) = id (x,y)?
+Sea a y b elementos de tipo cualquiera. Se verá que  swap . swap (a,b) = id (a,b)
     (swap . swap) (a,b)
 =                      (def de (.))
     swap (swap (a,b))
@@ -298,8 +305,8 @@ swap . swap (a,b) = id (a,b) son lo mismo porque partiendo de un lado se puede l
 
 iii. para todo f. para todo g. para todo h.
     f . (g . h) = (f . g) . h
-Por el principio de extensionalidad. Para todo x f . (g . h) x = (f . g) . h x
-Sea x un elemento de tipo cualquiera. Se verá que f . (g . h) a = (f . g) . h a
+Por el principio de extensionalidad. ¿Para todo x f . (g . h) x = (f . g) . h x?
+Sea a un elemento de tipo cualquiera. Se verá que f . (g . h) a = (f . g) . h a
     (f . (g . h)) a
 =               (def (.))
     f ((g . h) a)
@@ -313,8 +320,8 @@ Sea x un elemento de tipo cualquiera. Se verá que f . (g . h) a = (f . g) . h a
 f . (g . h) a = (f . g) . h a son lo mismo porque partiendo de un lado se puede llegar al otro
 
 iv. curry . uncurry = id
-Por el principio de extensionalidad. Para Para todo f . (curry . uncurry) f  = id f 
-Sea f una funcion . Se verá que (curry . uncurry) g = id g 
+Por el principio de extensionalidad. ¿Para todo f . (curry . uncurry) f  = id f ?
+Sea g una funcion cualquiera. Se verá que (curry . uncurry) g = id g 
     (curry . uncurry) g
 =                           (def de (.))
     curry (uncurry g) 
@@ -326,8 +333,8 @@ Sea f una funcion . Se verá que (curry . uncurry) g = id g
 (curry . uncurry) g = id g son lo mismo porque partiendo de un lado se puede llegar al otro
 
 v. para todo f. appAssoc f = f . assoc
-Por el principio de extensionalidad. Para todo x y. para todo f. P. appAssoc f (x,(y,z)) = f . assoc (x,(y,z)
-Sea x y z elementos de tipo cualquiera. Se verá que appAssoc f (a,(b,c)) = f . assoc (a,(b,c)
+Por el principio de extensionalidad. ¿Para todo x y. para todo f. P. appAssoc f (x,(y,z)) = f . assoc (x,(y,z))?
+Sea a b c elementos de tipo cualquiera. Se verá que appAssoc f (a,(b,c)) = f . assoc (a,(b,c)
 
     appAssoc f (a,(b,c))
 =                   (def appAssoc)
@@ -344,10 +351,9 @@ ya demostradas (sin utilizar el principio de extensionalidad ni las definiciones
 de las funciones directamente):
 i. doble . doble = cuadruple
    
+   parto de la izquierda para llegar a la derecha
     doble . doble 
-=               (def (.))
-    doble doble
-=               (def cuadruple)
+=               (lema 1 b)
     cuadruple
 
 doble . doble = cuadruple son lo mismo porque partiendo de un lado se puede llegar al otro
