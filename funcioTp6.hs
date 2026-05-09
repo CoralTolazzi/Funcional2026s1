@@ -1,7 +1,7 @@
 {-Ejercicio 1) Demostrar las siguientes propiedades:
     a. doble = \x -> 2 * x
-    Por el principio de extensionalidad. Para todo x. doble n = (\x -> 2 * x) n
-    Sea n un numero cualquiera. Se verá que que doble e = (\x -> 2 * x) e
+    Por el principio de extensionalidad. ¿Para todo x. doble n = (\x -> 2 * x) n?
+    Sea n un numero cualquiera. Se verá que ¡doble e = (\x -> 2 * x) e!
 
         doble e
     =           (def. doble)
@@ -343,6 +343,7 @@ c. demostrar las siguientes propiedades solamente mediante otras propiedades
 ya demostradas (sin utilizar el principio de extensionalidad ni las definiciones
 de las funciones directamente):
 i. doble . doble = cuadruple
+   
     doble . doble 
 =               (def (.))
     doble doble
@@ -352,24 +353,40 @@ i. doble . doble = cuadruple
 doble . doble = cuadruple son lo mismo porque partiendo de un lado se puede llegar al otro
 
 ii. para todo f'. curry (uncurry (curry f')) = curry f'
-    curry (uncurry (curry f'))
+Demostración: ¿para todo f. curry (uncurry (curry f')) = curry f?
+Sea g, se verá que: ¡curry (uncurry (curry g')) = curry g!
+
+Parto del lado izquierdo:
+    curry (uncurry (curry g'))
     =                           (Lema 7)
-    curry f'
+    curry g'
+Se observa que se llegó al lado derecho!
+Conclusión: para todo f. curry (uncurry (curry f')) = curry f
 
 iii. para todo f. appAssoc (uncurry (uncurry f)) = (uncurry . uncurry) f . assoc
+Demostración: ¿para todo f. appAssoc (uncurry (uncurry f)) = (uncurry . uncurry) f . assoc?
+Sea g, se verá que: ¡para todo g. appAssoc (uncurry (uncurry g)) = (uncurry . uncurry) g . assoc!
 
-    appAssoc (uncurry (uncurry f))
+Parto del lado izquierdo:
+    appAssoc (uncurry (uncurry g))
     =                               (Lema)
-    (uncurry (uncurry f)) . assoc
-
+    (uncurry (uncurry g)) . assoc
+Se observa que se llegó al lado derecho!
+Conclusión: para todo f. appAssoc (uncurry (uncurry f)) = (uncurry . uncurry) f . assoc
 
 iv. para todo f. (uncurry . uncurry) f . assoc = uncurry (uncurry . f)
-    (uncurry . uncurry) f . assoc
-=                                  (Lema 7 iii)
-    appAssoc (uncurry (uncurry f))
-=                                   (lema 6)
-    uncurry (compose uncurry f)
-=                                   (compose = (.))
-    uncurry (uncurry . f)
+Demostración: ¿para todo f. (uncurry . uncurry) f . assoc = uncurry (uncurry . f)?
+Sea g, se verá que: ¡(uncurry . uncurry) g . assoc = uncurry (uncurry . g)!
 
--}    
+Parto del lado izquierdo:
+    (uncurry . uncurry) g . assoc
+=                                  (Lema 7 iii)
+    appAssoc (uncurry (uncurry g))
+=                                   (lema 6)
+    uncurry (compose uncurry g)
+=                                   (compose = (.))
+    uncurry (uncurry g)
+Se observa que se llegó al lado derecho!
+
+Conclusión: para todo f. (uncurry . uncurry) f . assoc = uncurry (uncurry . f)
+-}
