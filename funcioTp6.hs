@@ -52,7 +52,7 @@ Ejercicio 2) Demostrar las siguientes propiedades:
         =                           (def And)
         False
 
-    not ((not b) || (not False|)) son lo mismo porque partiendo de un lado se puede llegar al otro
+    not ((not x) || (not y|)) son lo mismo porque partiendo de un lado se puede llegar al otro
 
     Caso y = True
     Sea b::Bool, se verá que: b && True = not ((not b) || (not True|))
@@ -71,7 +71,7 @@ Ejercicio 2) Demostrar las siguientes propiedades:
         =                           (def and)
         b
 
-   b && True = not ((not b) || (not True|)) son lo mismo porque partiendo de un lado se puede llegar al otro
+   b b && True = not ((not b) || (not True|)) son lo mismo porque partiendo de un lado se puede llegar al otro
 
     b. ¿para todo x. para todo y. not (x || y) = not x && not y?
 
@@ -111,14 +111,9 @@ Ejercicio 2) Demostrar las siguientes propiedades:
     
     not (b || True) = not b && not True son lo mismo porque partiendo de un lado se puede llegar al otro
 
-
-
-
--}
-{-
 Ejercicio 3) Demostrar las siguientes propiedades:
     a. curry suma' = suma
-    Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 ?
+    Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry suma' n1 n2 =  suma n1 n2 ?
     Sea a y b dos numeros cualquiera. Se verá que que curry suma' a b = suma a b 
 
     curry suma' a b
@@ -129,9 +124,9 @@ Ejercicio 3) Demostrar las siguientes propiedades:
    =                (def de suma)
     suma a b
     
-    curry suma' a b = suma a b son lo mismo porque partiendo de un lado se puede llegar al otro
+    curry suma' n1 n2 = suma n1 n2 son lo mismo porque partiendo de un lado se puede llegar al otro
     
-Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry suma' n1 n2 = cuadruple n1 n2 ?
+Por el principio de extensionalidad. ¿Para todo x Para todo y. uncurry suma (x,y) = suma' (x,y) ?
 Sea a y b dos numeros cualquiera. Se verá que uncurry suma (a,b) = suma' (a,b)
     
     uncurry suma (a,b) 
@@ -142,13 +137,13 @@ Sea a y b dos numeros cualquiera. Se verá que uncurry suma (a,b) = suma' (a,b)
    =                (def de suma')
     suma' (a,b)
 
-uncurry suma (a,b) = suma' (a,b) son lo mismo porque partiendo de un lado se puede llegar al otro
+uncurry suma (x,y) = suma' (x,y) son lo mismo porque partiendo de un lado se puede llegar al otro
 
 -}
 {-
 Ejercicio 4) Demostrar las siguientes propiedades:
 
-Por el principio de extensionalidad. ¿Para todo x Para todo y.  curry fst x y = const x y?
+Por el principio de extensionalidad. ¿Para todo x Para todo y. curry fst x y = const x y?
 Sea a y b elementos de tipo cualquiera. Se verá que curry fst a b = const a b
  
     curry fst a b 
@@ -159,7 +154,7 @@ Sea a y b elementos de tipo cualquiera. Se verá que curry fst a b = const a b
    =                (def de const)
     const a b
     
-curry fst a b = const a b son lo mismo porque partiendo de un lado se puede llegar al otro
+curry fst x y = const x y son lo mismo porque partiendo de un lado se puede llegar al otro
 
 
 Por el principio de extensionalidad. ¿Para todo x Para todo y.  uncurry (flip const) (x,y) = snd (x,y)?
@@ -176,7 +171,7 @@ Por el principio de extensionalidad. ¿Para todo x Para todo y.  uncurry (flip c
     snd (a,b)
 
 
-uncurry (flip const) (a,b) = snd (a,b) son lo mismo porque partiendo de un lado se puede llegar al otro
+uncurry (flip const) (x,y) = snd (x,y) son lo mismo porque partiendo de un lado se puede llegar al otro
 
 
 -}
@@ -191,7 +186,7 @@ Por el principio de extensionalidad. ¿Para todo x Para todo y. curry (uncurry f
 =            (def de uncurry)
     f a b
     
-curry (uncurry f) a b = f a b son lo mismo porque partiendo de un lado se puede llegar al otro
+curry (uncurry f) x y = f x y son lo mismo porque partiendo de un lado se puede llegar al otro
 
 
     b. para todo f'. uncurry (curry f') = f'
@@ -204,9 +199,8 @@ Sea a y b elementos de tipo cualquiera. Se verá que uncurry (curry f') (a,b) = 
 =          (def de curry)
     f' (a,b)
 
-uncurry (curry f') (a,b) = f' (a,b) son lo mismo porque partiendo de un lado se puede llegar al otro
--}
-{-
+uncurry (curry f') (x,y) = f' (x,y) son lo mismo porque partiendo de un lado se puede llegar al otro
+
 Ejercicio 6) Dadas las siguientes definiciones
     assoc :: (a,(b,c)) -> ((a,b),c)
     assoc (x,(y,z)) = ((x,y),z)
@@ -218,7 +212,6 @@ para todo f.
 appAssoc (uncurry (uncurry f)) = uncurry (compose uncurry f)
 AYUDA: de necesitar el principio de extensionalidad, considerar usar el argumento
 en la forma (x,(y,z)).
-
 
  Por el principio de extensionalidad. ¿Para todo f. appAssoc (uncurry (uncurry f))(x,(y,z)) = uncurry (compose uncurry f) (x,(y,z))?
 Sea a b c elementos de tipo cualquiera. Se verá que appAssoc (uncurry (uncurry f)) (a,(b,c)) = uncurry (compose uncurry f) (a,(b,c))
@@ -241,11 +234,8 @@ Sea a b c elementos de tipo cualquiera. Se verá que appAssoc (uncurry (uncurry 
 =                                           (def uncurry)
     f a b c
 
-appAssoc (uncurry (uncurry f)) (a,(b,c)) = uncurry (compose uncurry f) (a,(b,c)) son lo mismo porque partiendo de un lado se puede llegar al otro
+appAssoc (uncurry (uncurry f)) (x,(y,z)) = uncurry (compose uncurry f) (x,(y,z)) son lo mismo porque partiendo de un lado se puede llegar al otro
 
-
--}
-{-
 Ejercicio 7) Dada la siguiente definición
 (f . g) x = f (g x)
 a. definir las siguientes funciones utilizando el operador (.) y la menor
@@ -271,9 +261,7 @@ many n f = f . many (n-1) f
 
 Ayuda: pueden utilizarse como definidas las funciones succ, doble,
 const, id, subst, dup, etc.
--}
 
-{-
 b. demostrar las siguientes propiedades:
 i. para todo f. para todo g. f . g = compose f g
 Por el principio de extensionalidad. ¿Para todo x. f . g x = compose f g x?
@@ -284,9 +272,7 @@ Sea a un elemento de tipo cualquiera. Se verá que  f . g a = compose f g a
 =              (def compose)
     compose f g a
 
-
-f . g a = compose f g a son lo mismo porque partiendo de un lado se puede llegar al otro
-
+f . g x = compose f g x son lo mismo porque partiendo de un lado se puede llegar al otro
 
 ii. swap . swap = id
 Por el principio de extensionalidad. ¿Para todo x y para todo y. swap . swap (x,y) = id (x,y)?
@@ -301,7 +287,7 @@ Sea a y b elementos de tipo cualquiera. Se verá que  swap . swap (a,b) = id (a,
 =                      (def de id)
     id (a,b)
 
-swap . swap (a,b) = id (a,b) son lo mismo porque partiendo de un lado se puede llegar al otro
+swap . swap (x,y) = id (x,y) son lo mismo porque partiendo de un lado se puede llegar al otro
 
 iii. para todo f. para todo g. para todo h.
     f . (g . h) = (f . g) . h
@@ -317,7 +303,7 @@ Sea a un elemento de tipo cualquiera. Se verá que f . (g . h) a = (f . g) . h a
 =               (def (.))
     ((f . g) . h) a
 
-f . (g . h) a = (f . g) . h a son lo mismo porque partiendo de un lado se puede llegar al otro
+f . (g . h) x = (f . g) . h x son lo mismo porque partiendo de un lado se puede llegar al otro
 
 iv. curry . uncurry = id
 Por el principio de extensionalidad. ¿Para todo f . (curry . uncurry) f  = id f ?
@@ -330,7 +316,7 @@ Sea g una funcion cualquiera. Se verá que (curry . uncurry) g = id g
 =                   (def id)
     id g 
 
-(curry . uncurry) g = id g son lo mismo porque partiendo de un lado se puede llegar al otro
+(curry . uncurry) f = id f son lo mismo porque partiendo de un lado se puede llegar al otro
 
 v. para todo f. appAssoc f = f . assoc
 Por el principio de extensionalidad. ¿Para todo x y. para todo f. P. appAssoc f (x,(y,z)) = f . assoc (x,(y,z))?
@@ -342,10 +328,8 @@ Sea a b c elementos de tipo cualquiera. Se verá que appAssoc f (a,(b,c)) = f . 
 =                   (def (.))
     f . assoc (a,(b,c))
 
-appAssoc f (a,(b,c)) = f . assoc (a,(b,c) son lo mismo porque partiendo de un lado se puede llegar al otro
+appAssoc f (x,(y,z)) = f . assoc (x,(y,z) son lo mismo porque partiendo de un lado se puede llegar al otro
 
--}
-{-
 c. demostrar las siguientes propiedades solamente mediante otras propiedades
 ya demostradas (sin utilizar el principio de extensionalidad ni las definiciones
 de las funciones directamente):

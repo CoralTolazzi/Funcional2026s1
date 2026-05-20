@@ -484,7 +484,7 @@ Conclusion: largoDePlanilla (planillaDeIntegrantes (Becario n)) = cantidadDeInte
 d. largoDePlanilla (planillaDeIntegrantes (Investigador "Alonzo" (Becario "Alan") (Becario "Alfred") (Becario "Stephen"))) 
    = cantidadDeIntegrantes(Investigador "Alonzo" (Becario "Alan") (Becario "Alfred") (Becario "Stephen"))
 
-izq:
+Parto de la izq:
 largoDePlanilla (planillaDeIntegrantes (Investigador "Alonzo" (Becario "Alan") (Becario "Alfred") (Becario "Stephen"))) 
 =                                                                                   (def planillaDeIntegrantes.2)
 largoDePlanilla (juntarPlanillas (Registro "Alonzo" (planillaDeIntegrantes (Becario "Alan")) (juntarPlanillas (planillaDeIntegrantes (Becario "Alfred")) (planillaDeIntegrantes (Becario "Stephen"))) 
