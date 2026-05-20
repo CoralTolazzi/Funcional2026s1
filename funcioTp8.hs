@@ -505,9 +505,6 @@ Vale la Propiedad
 ===========================================================================
 g. all null = null . concat
 
-
-
-
 Por el ppio. de ext. ¿Para todo xs. all null xs = (null . concat) xs?
 =                                                                   (def. (.))
 ¿Para todo xs. all null xs = null (concat xs)?
@@ -517,9 +514,9 @@ Por ppio. de ind. en la estructura de ys es equivalente demostrar:
 
 Caso Base: ys = [])
         ¿all null [] = null (concat [])?
-Caso ind: ys = (z:zs))
-    HI) ¡all null zs = null (concat zs)!
-    TI) ¿all null (z:zs) = null (concat (z:zs))?
+Caso ind: ys = (zs:zss))
+    HI) ¡all null zss = null (concat zss)!
+    TI) ¿all null (zs:zss) = null (concat (zs:zss))?
 
 Caso Base:
 IZQ:
@@ -541,24 +538,109 @@ Vale para este caso
 
 Caso Ind:
 IZQ:
-all null (z:zs)
+all null (zs:zss)
 ---------------
 =           (all.2)
-null z && all null zs  
+null zs && all null zss  
           ------------
 =                   (HI)
-null z && null (concat zs)
+null zs && null (concat zss)
 
 DER:
-null (concat (z:zs))
+null (concat (zs:zss))
       --------------
 =                       (dem.2)
-null (z ++ concat zs)
+null (zs ++ concat zss)
+----------------------
+=                       (LEMA.2)
+null zs && null (concat zss)
+
+Vale La propiedad
+Vale este caso
+===========================================================================
+LEMA.2
+por ppio. de ext.:
+¿para todo xs. ys. null (xs ++ ys) = null xs && null ys?
+Dem: Sean zs::[a], ws::[a]  null (zs ++ ws) = null zs && null ws 
+
+IZQ:
+null (zs ++ ws)
+=               (def de null)
+null zs && null ws
+
+Der:
+null zs && null ws
+=               (def de (++))
+null (zs ++ ws)
 
 
-
+Vale para este Caso
+Vale La Propiedad
 ===========================================================================
 h. length = length . reverse
+
+Por el ppio. de ext. ¿Para todo xs. length xs = (length . reverse) xs?
+=                                                                     (def. (.))
+ ¿Para todo xs.  length xs = length (reverse xs)?
+
+Dem: Sea una ys::[a]
+Por ppio. de ind. en la estructura de ys es equivalente demostrar:
+
+Caso Base: ys = [])
+        ¿length [] = length (reverse [])?
+Caso ind: zs = (z:zs))
+    HI) ¡length zs = length (reverse zs)!
+    TI) ¿length (z:zs) = length (reverse (z:zs))?
+
+Caso Base:
+IZQ:
+length [] 
+---------- 
+=          (length.1)
+0
+
+DER:
+length (reverse [])
+        ----------
+=           (def reverse.1)
+length [] 
+---------- 
+=          (length.1)
+0
+
+Vale para este caso
+
+
+length (z:zs)
+-------------
+=           (length.2)
+1 + length zs
+
+
+length (reverse (z:zs))
+        --------------
+=                   (reverse.2)
+length (reverse zs ++ [z])
+=                    (lema.3)
+length (reverse zs) + length [z]
+--------------------------------
+=                       (HI)       
+length zs + length [z]
+            ----------
+=                       (length.2)
+length zs + 1 + length []
+                ----------
+=                       (length.1)
+length zs + 1 + 0
+            -----
+=                    (aritm. conmutatividad)
+1 + length zs
+
+Vale Para este caso
+Vale la Propiedad
+
+
+
 
 ===========================================================================
 i. para todo xs. para todo ys.
