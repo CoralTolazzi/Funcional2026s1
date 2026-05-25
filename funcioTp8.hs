@@ -777,7 +777,6 @@ Por ppio. de ind. en la estructura de ws es equivalente demostrar:
 Caso Base: ws = [])
         ¿all p ([]++ts) = all p (reverse []) && all p (reverse ts)?
 
-
 Caso ind: ws = (z:zs))
     HI) ¡all p (zs++ts) = all p (reverse zs) && all p (reverse ts)!
     TI) ¿all p ((z:zs)++ts) = all p (reverse (z:zs)) && all p (reverse ts)?
@@ -1305,6 +1304,8 @@ ser necesario):
     v. n2nu :: N -> NU, que describe la representación unaria dada por
     el tipo NU correspondiente al número representado por el argumento.
 -}
+type NU = [()]
+
 evalNU :: NU -> Int
 evalNU [] = 0
 evalNU (_:xs) = 1 + evalNU xs
@@ -1327,39 +1328,229 @@ n2nu (S n) = () : (n2nu n)
 b. demostrar las siguientes propiedades:
     i. evalNU . succNU = (+1) . evalNU
 
-Por el ppio. de ext. ¿Para todo xs. evalNU . succNU xs = (+1) . evalNU xs
+Por el ppio. de ext. ¿Para todo n. evalNU . succNU n = (+1) . evalNU n
 =                                                                 (def. (.))
-¿Para todo xs. evalNU (succNU xs) = (+1) (evalNU xs)?
+¿Para todo n. evalNU (succNU n) = (+1) (evalNU n)?
 
-Dem: Sea una ys::N
-Por ppio. de ind. en la estructura de ys es equivalente demostrar:
+Dem: Sea una ns:: NU
+Por ppio. de ind. en la estructura de ns es equivalente demostrar:
 
-Caso Base: ys = [])
-        ¿length [] = length (reverse [])?
-Caso ind: ys = (():zs)
-    HI) ¡length zs = length (reverse zs)!
-    TI) ¿length (z:zs) = length (reverse (z:zs))?
+Caso Base: ns = [])
+        ¿evalNU (succNU []) = (+1) (evalNU [])?
+Caso ind: ns = (():zs))
+    HI) ¡evalNU (succNU zs) = (+1) (evalNU zs)!
+    TI) ¿evalNU (succNU (():zs)) = (+1) (evalNU (():zs))?
+
+Caso Base:
+IZQ:
+evalNU (succNU []) 
+=               (succNU)
+evalNU [()]
+=           (evalNU.2)
+1 + evalNU []
+=           (evalNU.1)
+1 + 0
+=           (aritmetica)
+1
 
 
+(+1) (evalNU [])
+=           (evalNU.1)
+1 + 0
+=           (aritmetica)
+1
+
+Vale para este caso
+
+dem Caso induccion:
+IZQ:
+evalNU (succNU (():zs))
+=               (succNU)
+evalNU (():(():zs))
+=           (evalNU.2)
+1 + evalNU (():zs)
+=           (evalNU.2)
+1 + 1 + evalNU zs)
+=           (aritmetica)
+2 + evalNU zs
+
+DER:
+(+1) (evalNU (():zs))
+=           (evalNU.2)
+(+1) (1 + evalNU zs)
+=               (HI)
+(+1) (1 + evalNU zs)
+=           (aritmetica)
+2 + evalNU zs
+
+Vale para este caso
+Vale la propiedad
+===========================================================================
+ii. para todo n1. para todo n2.
+evalNU (addNU n1 n2) = evalNU n1 + evalNU n2
+
+¿para todo n1. para todo n2.
+evalNU (addNU n1 n2) = evalNU n1 + evalNU n2?
+
+DEM:
+Sea n11::NU y n22::NU
+
+Por ppio. de ind. en la estructura de n1 es equivalente demostrar:
+
+Caso Base: n11 = [])
+    ¿evalNU (addNU [] n22) = evalNU [] + evalNU n22?
+Caso ind: n11 = (():zs))
+    HI) ¡evalNU (addNU zs n22) = evalNU zs + evalNU n22!
+    TI) ¿evalNU (addNU (():zs) n22) = evalNU (():zs) + evalNU n22?
 
 
+CB:
+IZQ:
+evalNU (addNU [] n22) 
+=                   (addNU.1)
+evalNU n22
+
+DER:
+evalNU [] + evalNU n22
+----------
+=                   (evalNU.1)
+0 + evalNU n22
+=                   (aritmetica)
+evalNU n22
+
+Vale para este caso
+
+CI:
+IZQ:
+evalNU (addNU (():zs) n22)
+=                       (addNU.2)
+evalNU (() : (addNU zs n22))
+=                           (evalNU.1)
+1 + evalNU (addNU zs n22)
+=                        (HI)
+1 + evalNU zs + evalNU n22!
+
+DER:
+evalNU (():zs) + evalNU n22
+--------------
+=                          (evalNU.2)
+1 + evalNU zs + evalNU n22
 
 
+Vale para este caso
+Vale la propiedad
+===========================================================================
+iii. nu2n . n2nu = id
+
+Por ppio. de ext.:
+para todo n.
+    ¿nu2n . n2nu n = id n?
+=                                (.)
+    ¿nu2n (n2nu n) = id n?
+
+Sea n1::N. Qvq:
+
+Por ppio. de ind. en la estructura de n1 es equivalente demostrar:
+    ¿nu2n (n2nu n) = id n?
+
+Caso base, n1 = Z)
+    ¿nu2n (n2nu Z) = id Z?
+Caso ind, n2 = (S n3))
+    H1: ¡nu2n (n2nu n3) = id n3!
+    TI: ¿nu2n (n2nu (S n3)) = id (S n3)?
+
+Caso Base:
+IZQ:
+nu2n (n2nu Z) 
+    ----------
+=            (n2nu.1)
+nu2n []
+=            (nu2n.1)             
+Z
+
+DER:
+id Z
+=   (id)
+Z
+
+Vale para este caso
+Caso ind:
+
+IZQ:
+nu2n (n2nu (S n3))
+=           (n2nu.2)
+nu2n (() : (n2nu n3))
+=           (nu2n.2)
+S (nu2n (n2nu n3))
+=           (HI)
+S (id n3)
+=           (id)
+S n3
+
+DER:
+id (S n3)
+=           (id)
+S n3
+
+Vale para este caso
+Vale la propiedad
+===========================================================================
+    iv. n2nu . nu2n = id
+
+Por ppio. de ext.:
+para todo n.
+    ¿n2nu . nu2n n = id n?
+=                                (.)
+    ¿n2nu (nu2n n) = id n?
+
+Sea n1::NU. Qvq:
+
+Por ppio. de ind. en la estructura de n1 es equivalente demostrar:
+    ¿nu2n (n2nu n) = id n?
+
+Caso base, n1 = [])
+    ¿n2nu (nu2n []) = id []?
+Caso ind, n2 = (():n3))
+    H1: ¡n2nu (nu2n n3) = id n3!
+    TI: ¿n2nu (nu2n (():n3)) = id (():n3)?
 
 
+Caso Base:
+IZQ:
+n2nu (nu2n [])
+=               (nu2n.1)
+n2nu Z
+=               (n2nu.1)
+[]
 
+DER:
+id Z
+=          (id)
+[]
 
+Vale para este Caso
 
+Caso IND:
+IZQ:
+n2nu (nu2n (():n3))
+=               (nu2m.2)
+n2nu (S (nu2n n3))
+=               (n2nu.2)
+() : (n2nu (nu2n n3))
+=                  (HI)
+() : id n3
+=                (id)
+() : n3
 
+DER:
+id (():n3)
+=               (id)
+() : n3
 
-
-
+Vale para este caso
+Vale la propiedad
 
 ===========================================================================
-    ii. para todo n1. para todo n2.
-    evalNU (addNU n1 n2) = evalNU n1 + evalNU n2
-    iii. nu2n . n2nu = id
-    iv. n2nu . nu2n = id
 Ejercicio 3) Dada la siguiente definición
 
     type NBin = [DigBin]
@@ -1407,98 +1598,141 @@ ser necesario):
     normalizada dada por el tipo NBin correspondiente al número
     representado por el argumento.
 
+-}
+
+data DigBin = O | I
+type NBin = [DigBin]
+
+dbAsInt :: DigBin -> Int
+dbAsInt I = 1
+dbAsInt O = 0
+
+dbAsBool :: DigBin -> Bool
+dbAsBool I = True
+dbAsBool O = False
+
+dbOfBool :: Bool -> DigBin
+dbOfBool True = I
+dbOfBool False = O
+
+negDB :: DigBin -> DigBin
+negDB O = I
+negDB I = O
+
+evalNB :: NBin -> Int
+evalNB []     = 0
+evalNB (d:ds) = dbAsInt d + 2 * evalNB ds
+
+normalizarNB :: NBin -> NBin
+normalizarNB []     = []
+normalizarNB (d:ds) = normalizarNB' d (normalizarNB ds)
+
+normalizarNB' :: DigBin -> [DigBin] -> [DigBin]
+normalizarNB' O [] = []
+normalizarNB' d ds = d:ds
+
+succNB :: NBin -> NBin
+succNB []     = [I]
+succNB (d:ds) = case d of
+  O -> I : ds
+  I -> O : succNB ds
+
+-- PREC: n y m están normalizados
+addNB :: NBin -> NBin -> NBin    -- Comparar con alguien más
+addNB []     m        = m 
+addNB n      []       = n
+-- addNB (d:ds) (d':ds') = let (d'',c) = addDB d d'
+--   in d'' : addNBConCarry (addNB ds ds') c
+addNB (d:ds) (d':ds') = f d d' (addNB ds ds')
+
+f :: DigBin -> DigBin -> NBin -> NBin
+f O O n = O : n
+f I I n = O : succNB n
+f _ _ n = I : n
+
+addNBConCarry :: NBin -> DigBin -> NBin
+addNBConCarry n O = n
+addNBConCarry n I = succNB n
+
+addDB :: DigBin -> DigBin -> (DigBin, DigBin)
+addDB I I = (O,I)
+addDB O O = (O,O)
+addDB _ _ = (I,O)
+
+nb2n :: NBin -> N
+nb2n []     = Z
+nb2n (d:ds) = db2n d `addN` S (S Z) `prodN` nb2n ds
+
+db2n :: DigBin -> N
+db2n O = Z
+db2n I = S Z
+
+n2nb :: N -> NBin
+n2nb Z     = []
+n2nb (S n) = succNB (n2nb n)
+
+{-
+NO ME SALIO NAAADAAAAAAAAAAAAAAAAA
 b. demostrar las siguientes propiedades:
-
+NBin
 ===========================================================================
-i. evalNB . normalizarNB = evalNB
-    
+¿(evalNB . normalizarNB) n = evalNB n?
+¿evalNB (normalizarNB n) = evalNB n?
+
+Dem: Sea m::NBin. Por ppio. de ind. sobre la estructura de n, se verá que:
+
+Caso base, m=[]: evalNB (normalizarNB []) = evalNB []
+Caso ind., m=(d:ds):
+  HI: ¡evalNB (normalizarNB ds) = evalNB ds!
+  TI: ¿evalNB (normalizarNB (d:ds)) = evalNB (d:ds)?
+
+Caso base IZQ:
+...
+
+Caso base DER:
+...
+
+Antes del Caso ind. cubriremos el caso particular m=(O:[]):
+Caso particular m=(O:[]) IZQ:
+evalNB (normalizarNB (O:[]))
+evalNB (normalizarNB' O (normalizarNB []))
+evalNB (normalizarNB' O [])
+evalNB []
+
+Caso particular m=(O:[]) DER:
+evalNB (O:[])
+dbAsInt O + 2 * evalNB []
+0 + evalNB []
+evalNB []
+
+El caso particular queda demostrado ✅
+
+Ahora sí, vamos al Caso ind. teniendo en cuenta que ya cubrimos el caso m=(O:[])
+Caso ind. IZQ:
+evalNB (normalizarNB (d:ds))
+evalNB (normalizarNB' d (normalizarNB ds))
+evalNB (d : normalizarNB ds)
+dbAsInt d + 2 * evalNB (normalizarNB ds)
+dbAsInt d + 2 * evalNB ds
+
+Caso ind. DER:
+evalNB (d:ds)
+dbAsInt d + 2 evalNB ds
+
+El caso ind. queda demostrado ✅
 ===========================================================================
-ii. evalNB . succNB = (+1) . evalNB
-    
-===========================================================================
-iii. para todo n1. para todo n2.
-evalNB (addNB n1 n2) = evalNB n1 + evalNB n2
 
-===========================================================================
-iv. nb2n . n2nb = id
 
-===========================================================================
-v. normalizarNB . normalizarNB = normalizarNB
-
-c. solamente una de las siguientes propiedades es verdadera. Dar un
-contraejemplo para la que no lo sea, y demostrar la que sí lo sea.
-
-i. n2nb . nb2n = id
-
-ii. n2nb . nb2n = normalizarNB
-
-Ejercicio 4) (ADICIONAL con mayor extensión pero no mayor complejidad)
-Dada la siguiente definición
-    
-    type NDec = [DigDec]
-
-cuya intención es describir representaciones decimales de números con el dígito
-menos significativo a la izquierda, y siendo DigDec el tipo definido en el ejercicio 3
-de la práctica 5. Es recomendable reutilizar las funciones definidas en el ejercicio
-mencionado.
-a. implementar las siguientes funciones por recursión estructural (o primitiva de
-ser necesario):
-    i. evalND :: NDec -> Int, que describe el número representado
-    por el elemento dado.
-    
-    ii. normalizarND :: NDec -> NDec, que describe la representación
-    decimal del número representado por el argumento, pero sin “ceros a
-    la izquierda” (dígitos redundantes).
-    OBSERVACIÓN: por la forma de la representación, los “ceros a
-    izquierda” aparecen a la derecha de la lista. Entonces la propiedad
-    indica que una lista de dígitos normalizada no puede terminar con el
-    dígito 0.
-    
-    iii. succNDec :: NDec -> NDec, que describe la representación
-    decimal normalizada del resultado de sumarle uno al número
-    representado por el argumento. La resolución debe ser
-    exclusivamente simbólica, y no debe utilizar normalizarND. Se
-    puede suponer como precondición que el argumento está
-    normalizado.
-    
-    iv. addNDec :: NDec -> NDec -> NDec, que describe la
-    representación decimal normalizada de la suma de los números
-    representados por los argumentos. La resolución debe ser
-    exclusivamente simbólica, y no debe utilizar normalizarND. Se
-    puede suponer como precondición que los argumentos está
-    normalizados.
-    
-    v. nd2nb :: NDec -> NBin, que describe la representación binaria
-    normalizada correspondiente al número representado por el
-    argumento.
-    
-    vi. nb2nd :: NBin -> NDec, que describe la representación decimal
-    normalizada correspondiente al número representado por el
-    argumento.
-
-b. demostrar por inducción estructural las siguientes propiedades o dar
-contraejemplos en los casos que no valgan (y proponer alguna variante de la
-propiedad que sí sea válida):
-    i. evalNDec . succNDec = (+1) . evalNDec
-
-    ii. para todo n1. para todo n2.
-    evalNDec (addNDec n1 n2)
-    = evalNDec n1 + evalNDec n2
-    
-    iii. nd2nb . nb2nd = normalizarNB
-   
-    iv. nb2nd . nd2nb = id
-
-Ejercicio 5) Dar la representación de los números 17 y 42 como N, NU, NBin y NDec.
 -----------------------------
 ----------Sección III--------
 -----------------------------
 
 Ejercicio 1) Dada la siguiente representación de expresiones aritméticas
-
+-}
     data ExpA = Cte Int
     | Suma ExpA ExpA
     | Prod ExpA ExpA
+{-
 a. implementar las siguientes funciones por recursión estructural (o primitiva de
 ser necesario):
     i. evalExpA :: ExpA -> Int, que describe el número que resulta
@@ -1510,27 +1744,37 @@ ser necesario):
     iii. cantidadDeSumaCero :: ExpA -> Int, que describe la cantidad
     de veces que aparece suma cero en la expresión aritmética dada. La
     resolución debe ser exclusivamente simbólica.
-b. demostrar por inducción estructural las siguientes propiedades:
-    i. evalExpA . simplificarExpA = evalExpA
-    ii. cantidadSumaCero . simplificarExpA = const 0
-Ejercicio 2) Dada la siguiente representación de expresiones aritméticas
-    data ExpS = CteS N
-    | SumS ExpS ExpS
-    | ProdS ExpS ExpS
-a. implementar las siguientes funciones por inducción estructural (o primitiva de
-ser necesario):
-    i. evalES :: ExpS -> Int, que describe el número que resulta de
-    evaluar la cuenta representada por la expresión aritmética dada.
-    ii. es2ExpA :: ExpS -> ExpA, que describe una expresión
-    aritmética representada con el tipo ExpA, que tiene el mismo
-    significado que la dada.
-    iii. expA2es :: ExpA -> ExpS, que describe una expresión
-    aritmética representada con el tipo ExpS, que tiene el mismo
-    significado que la dada.
-b. demostrar por inducción estructural las siguientes propiedades:
-    i. evalExpA . es2ExpA = evalES
-    ii. evalES . expA2es = evalExpA
-    iii. es2ExpA . expA2es = id
-    iv. expA2es . es2ExpA = id
-
 -}
+evalExpA :: ExpA -> Int
+evalExpA (Cte n)      = n
+evalExpA (Suma e1 e2) = evalExpA e1 + evalExpA e2
+evalExpA (Prod e1 e2) = evalExpA e1 * evalExpA e2
+
+simplificarExpA :: ExpA -> ExpA
+simplificarExpA (Cte n)      = Cte n
+simplificarExpA (Suma e1 e2) = simpSuma (simplificarExpA e1) (simplificarExpA e2)
+simplificarExpA (Prod e1 e2) = simpProd (simplificarExpA e1) (simplificarExpA e2)
+
+simpSuma :: ExpA -> ExpA -> ExpA
+simpSuma (Cte 0) e       = e
+simpSuma e       (Cte 0) = e
+simpSuma e       e'      = Suma e e'
+
+simpProd :: ExpA -> ExpA -> ExpA
+simpProd (Cte 0) _       = Cte 0
+simpProd _       (Cte 0) = Cte 0
+simpProd (Cte 1) e       = e
+simpProd e       (Cte 1) = e
+simpProd e       e'      = Prod e e'
+
+cantidadDeSumaCero :: ExpA -> Int
+cantidadDeSumaCero (Cte n)      = 0
+cantidadDeSumaCero (Suma e1 e2) =
+    esSumaCero e1 e2 + cantidadDeSumaCero e1 + cantidadDeSumaCero e2
+cantidadDeSumaCero (Prod e1 e2) =
+    cantidadDeSumaCero e1 + cantidadDeSumaCero e2
+
+esSumaCero :: ExpA -> ExpA -> Int
+esSumaCero (Cte 0) _       = 1
+esSumaCero _       (Cte 0) = 1
+esSumaCero _       _       = 0
