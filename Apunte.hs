@@ -96,7 +96,7 @@ flip :: (c -> d) -> (c -> (a -> d))
 flip f x y = (f y) x
 
 subst :: (a -> (c -> d)) -> ((a -> c) -> (a -> d))
-subst f g x = (f x) (g x)
+subst f g x = f x (g x)
 
 const :: b -> (a -> b)
 const x y = x
