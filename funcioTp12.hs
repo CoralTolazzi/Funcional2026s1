@@ -295,22 +295,31 @@ recT z f (NodeT x t1 t2) = f x t1 t2 (recT z f t1) (recT z f t2)
 
 --i.que describe el árbol resultante de insertar el elemento dado 
 --en el árbol dado, teniendo en cuenta invariantes de BST.
-insertT :: a -> Tree a -> Tree a
-insertT x = recT (NodeT x EmptyT EmptyT) (\y t1 t2 tr1 tr2 if x == y then NodeT y t1 t2 else
+insertT :: Ord a => a -> Tree a -> Tree a
+insertT x = recT (NodeT x EmptyT EmptyT) (\y t1 t2 tr1 tr2 -> if x == y then NodeT y t1 t2 else
                                                            if x < y then NodeT y tr1 t2 
                                                            else NodeT y t1 tr2)
 
+{-
 --ii. que describe el camino hasta el elemento
 -- dado en el árbol dado.
 --Precondición: existe el elemento en el árbol.
 caminoHasta :: Eq a => a -> Tree a -> [a]
-caminoHasta x = recT (error "Error") (\x t1 t2 xs1 xs2 -> if x == y then [x] else
-                                                          if perteneceT y t1 then x : xs1 else x : xs2
+caminoHasta y t = recT (error "Error") (\_ _ _ _ _-> case caminoHastaM y t1 of 
+                                                            Just xs -> xs
+                                                            Nothing -> error "Error")
 
-perteneceT :: Eq a => a -> Tree a -> Bool
-perteneceT _ EmptyT = False
-perteneceT x (NodeT y t1 t2)= x == y || perteneceT x t1 || perteneceT x t2
-
+caminoHastaM :: Eq a => Tree a -> a -> Maybe [a]
+caminoHastaM EmptyT _ = Nothing
+caminoHastaM (NodeT e t1 t2) x = if e == x then Just [e]
+                                           else 
+                                                case caminoHastaM t1 x of 
+                                                Just xs -> Just (e : xs)
+                                                Nothing -> case caminoHastaM t2 x of  
+                                                           Just xs' -> Just (e : xs')
+                                                           Nothing -> Nothing
+NO HECHO
+-}
 --e. Demostrar las siguientes propiedades utilizando las definiciones anteriores:
 
 --i. para todo f. sizeT . mapT f = sizeT
@@ -318,10 +327,8 @@ perteneceT x (NodeT y t1 t2)= x == y || perteneceT x t1 || perteneceT x t2
 --iii. foldT EmptyT NodeT = id
 
 
-
-{-INICIO
-Ejercicio 4) Dadas las siguientes definiciones para representar mapas con diferentes
-puntos de interés que pueden presentar objetos:
+--Ejercicio 4) Dadas las siguientes definiciones para representar mapas con diferentes
+--puntos de interés que pueden presentar objetos:
 
 data Dir = Left | Right | Straight
 data Mapa a = Cofre [a]
@@ -331,6 +338,20 @@ data Mapa a = Cofre [a]
 --a. Dar el tipo y definir foldM y recM, que expresan los esquemas de recursión
 --estructural y primitiva, respectivamente, para la estructura Mapa.
 
+foldM :: ([a] -> b) -> (b -> b -> b) -> ([a] -> b -> b -> b) -> Mapa a -> b
+foldM f g h (Cofre xs) = f xs
+foldM f g h (Nada m) = g (foldM f g h m) 
+foldM f g h (Bifurcacion xs m1 m2) = h xs (foldM f g h m1) (foldM f g h m2)  
+
+recM :: ([a] -> b)
+     -> (Mapa a -> b -> b)
+     -> ([a] -> Mapa a -> Mapa a -> b -> b -> b)
+     -> Mapa a -> b
+recM f g h (Cofre xs)             = f xs
+recM f g h (Nada m)               = g m (recM f g h m)
+recM f g h (Bifurcacion xs m1 m2) = h xs m1 m2 (recM f g h m1) (recM f g h m2)
+
+{-INICIO
 --b. Definir las siguientes funciones sin utilizar recursión explícita, utilizando el
 --esquema de recursión estructural o primitiva sobre Mapa según corresponda::
 
