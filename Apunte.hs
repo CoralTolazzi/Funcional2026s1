@@ -55,6 +55,81 @@ appDist :: (a -> b) -> ((a,b) -> (b,b))
 appDist f = g
     where g (x, y) = (f x, f y)
 
+-- foldr :: (Int -> Int -> Int) -> Int -> [Int] -> Int
+sum' :: [Int] -> Int
+sum' = foldr (+) 0
+--sum' ws = foldr (\x y -> x + y) 0 ws
+
+-- foldr :: (a -> Int -> Int) -> Int -> [a] -> Int
+length' :: [a] -> Int
+length' = foldr (const (+1)) 0
+-- length' = foldr (\_ n -> 1 + n) 0 
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr ((:) . f) []
+--map' f = foldr (\x ys -> f x : ys) []
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+filter' :: (a -> Bool) -> [a] -> [a]
+filter' f = foldr (\x xs-> singularSi x (f x) ++ xs) [] 
+--filter' f = foldr (\x xs -> singularSi x (f x) ++ xs) [] 
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+find' :: (a -> Bool) -> [a] -> Maybe a
+find' f = foldr (\x xs -> if f x then Just x else xs ) Nothing  
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+any' :: (a -> Bool) -> [a] -> Bool
+any' f = foldr ((||) . f) False
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+all' :: (a -> Bool) -> [a] -> Bool
+all' f = foldr ((&&) . f) True
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+countBy' :: (a -> Bool) -> [a] -> Int
+countBy' f = foldr (\x xs -> if f x then 1 + xs else xs) 0
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+partition' :: (a -> Bool) -> [a] -> ([a], [a])
+partition' f = foldr (\x (xs, ys) -> if f x then (x : xs, ys) else (xs, x : ys)) ([], [])
+
+-- foldr    :: (a -> ([b] -> [c]) -> [b] -> [c])
+--          -> ([b] -> [c]) 
+--          -> [a] 
+--          -> ([b] -> [c])
+zipWith' :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith' f = foldr (\x g ys -> case ys of 
+                            []      -> []
+                            (y:ys') -> f x y : g ys') (const [])
+                                                   -- (\_ -> []) es lo mismo que ignorar el parametro
+
+-- foldr :: (a -> [b] -> [b]) -> [b] -> [a] -> [b]
+scanr' :: (a -> b -> b) -> b -> [a] -> [b]
+scanr' f = foldr (\x ys -> let (y:ys') = ys in f x y : ys') . (:[])
+
+-- foldr :: (a -> [a] -> [a]) -> [a] -> [a] -> [a]
+takeWhile' :: (a -> Bool) -> [a] -> [a]
+takeWhile' f = foldr (\x ys -> singularSi x (f x) ++ ys) []
+
+-- foldr :: (a -> (Int -> [a]) -> Int -> [a]) -> (Int -> [a]) -> [a] -> (Int -> [a])
+
+take' :: Int -> [a] -> [a]
+-- take' :: [a] -> (Int -> [a])
+take' = flip (foldr (\x g n -> if n == 0 then [] else x : g (n-1)) (const []))
+
+-- foldr :: (a -> (Int -> [a]) -> Int -> [a]) -> (Int -> [a]) -> [a] -> (Int -> [a])
+drop' :: Int -> [a] -> [a]
+-- drop' :: [a] -> (Int -> [a])
+drop' = flip (foldr (\x g n -> if n == 0 then x : g 0 else g (n-1)) (const []))
+
+-- foldr :: (a -> (Int -> a) -> Int -> a) -> (Int -> a) -> [a] -> (Int -> a)
+elemAt' :: Int -> [a] -> a
+-- elemAt' :: [a] -> (Int -> a)
+elemAt' = flip (foldr (\x g n -> if n == 0 then x else g (n-1)) (const (error "404 not found") ))
+
+
 --flip :: (a -> b -> c) -> b -> a -> c
 --flip f = h
 --    where h x = k

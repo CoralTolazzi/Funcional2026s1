@@ -55,9 +55,88 @@ showExpA = foldExpA show (mostrarOp "+") (mostrarOp "*")
 mostrarOp :: String -> String -> String -> String
 mostrarOp op e1 e2 = "(" ++ e1 ++ op ++ e2 ++ ")"
 --c. Demostrar que evalExpA' es equivalente a evalExpA (ejercicio 6.a.i de la práctica 8) – o sea evalExpA' = evalExpA.
---NO HECHO
---d. Dar el tipo y definir recExpA, que expresa el esquema de recursión primitiva para la estructura ExpA.
+{-
+evalExpA :: ExpA -> Int
+evalExpA (Cte n)      = n
+evalExpA (Suma e1 e2) = evalExpA e1 + evalExpA e2
+evalExpA (Prod e1 e2) = evalExpA e1 * evalExpA e2
 
+¿evalExpA' = evalExpA?
+
+Por ppio de ext. ¿para todo ex. evalExpA' ex = evalExpA ex?
+Sean e :: ExpA, por ppio de ind. sobre la estructura de e, se verá que:
+
+
+Caso base, e = (Cte n))
+    ¿evalExpA' (Cte n) = evalExpA (Cte n)?
+CI1. e = (Suma n1 n2))
+    HI1) ¡evalExpA' n1 = evalExpA n1!
+    HI2) ¡evalExpA' n2 = evalExpA n2!
+    TI)  ¿evalExpA' (Suma n1 n2) = evalExpA (Suma n1 n2)?
+CI2. e = (Prod n1 n2))
+    HI1) ¡evalExpA' n1 = evalExpA n1!
+    HI2) ¡evalExpA' n2 = evalExpA n2!
+    TI)  ¿evalExpA' (Prod n1 n2) = evalExpA (Prod n1 n2) ?
+
+Caso Base
+IZQ:
+evalExpA' (Cte n)
+=                   (evalExpA')      
+foldExpA id (+) (*) (Cte n)
+=                   (foldExpA.1)
+id n
+=                   (id)
+n
+
+Der:
+evalExpA (Cte n)
+=                 evalExpA.1
+n
+
+Vale para este Caso
+
+CI1
+evalExpA' (Suma n1 n2)
+=                   (evalExpA')
+foldExpA id (+) (*) (Suma n1 n2)
+=                   (foldExpA.2)
+(+) (foldExpA id (+) (*) n1) (foldExpA id (+) (*) n2)
+=                                          (def de (+))
+foldExpA id (+) (*) n1 + foldExpA id (+) (*) n2
+
+evalExpA (Suma n1 n2)
+=                       (evalExpA)
+evalExpA n1 + evalExpA n2
+=                        (HI)
+evalExpA' n1 + evalExpA' n2
+=
+foldExpA id (+) (*) n1 + foldExpA id (+) (*) n2
+
+Vale para este Caso
+
+CI2
+
+evalExpA' (Prod n1 n2)
+=                   (evalExpA')
+foldExpA id (+) (*) (Prod n1 n2)
+=                   (foldExpA.2)
+(*) (foldExpA id (+) (*) n1) (foldExpA id (+) (*) n2)
+=                                          (def de (*))
+foldExpA id (+) (*) n1 * foldExpA id (+) (*) n2
+
+
+evalExpA (Prod n1 n2)
+=                       (evalExpA)
+evalExpA n1 * evalExpA n2
+=                        (HI)
+evalExpA' n1 * evalExpA' n2
+=
+foldExpA id (+) (*) n1 * foldExpA id (+) (*) n2
+
+Vale para este Caso
+
+-}
+--d. Dar el tipo y definir recExpA, que expresa el esquema de recursión primitiva para la estructura ExpA.
 
 recExpA :: (Int -> b) -> (b -> ExpA -> b -> ExpA -> b) ->  (b -> ExpA -> b -> ExpA -> b) -> ExpA -> b
 recExpA c s p (Cte n) = c n
@@ -187,9 +266,6 @@ mapT f = foldT EmptyT (NodeT . f)
 sumT :: Tree Int -> Int
 sumT = foldT 0 (\x n1 n2 -> x + n1 + n2)
 
-sizeT :: Tree a -> Int
-sizeT = foldT 0 (\x t1 t2 -> 1 + t1 + t2)
-
 heightT :: Tree a -> Int
 heightT = foldT 0 (\_ t1 t2-> 1 + max t1 t2)
 
@@ -238,9 +314,8 @@ unirPartitionSi False x (y1,y2) (z1,z2) = (y1++z1,x:y2++z2)
 ---zipWithT f = foldT (const EmptyT) (\x tbf1 tbf2 tb -> case tb of
 --                                    EmptyT -> EmptyT
 --                                    (NodeT y t3 t4) -> NodeT (f x y) (tbf1 t3) (tbf2 t4))
---SACAR F
 
-
+--Sin F
 --foldT :: (Tree b -> Tree c) 
 --          -> (a -> (Tree b -> Tree c) -> (Tree b -> Tree c) -> Tree b -> Tree c) 
 --          -> Tree a 
@@ -300,45 +375,217 @@ insertT x = recT (NodeT x EmptyT EmptyT) (\y t1 t2 tr1 tr2 -> if x == y then Nod
                                                            if x < y then NodeT y tr1 t2 
                                                            else NodeT y t1 tr2)
 
-{-
 --ii. que describe el camino hasta el elemento
 -- dado en el árbol dado.
 --Precondición: existe el elemento en el árbol.
-caminoHasta :: Eq a => a -> Tree a -> [a]
-caminoHasta y t = recT (error "Error") (\_ _ _ _ _-> case caminoHastaM y t1 of 
-                                                            Just xs -> xs
-                                                            Nothing -> error "Error")
 
+caminoHasta :: Eq a => a -> Tree a -> [a]
+caminoHasta y t = case caminoHastaM t y of  Just xs -> xs
+                                            Nothing -> error "Error"
+
+--foldT :: (a -> Maybe [a]) -> (a -> (a -> Maybe [a]) -> (a -> Maybe [a]) -> a -> Maybe [a]) 
+--        -> Tree a -> a -> Maybe [a]
 caminoHastaM :: Eq a => Tree a -> a -> Maybe [a]
-caminoHastaM EmptyT _ = Nothing
-caminoHastaM (NodeT e t1 t2) x = if e == x then Just [e]
-                                           else 
-                                                case caminoHastaM t1 x of 
-                                                Just xs -> Just (e : xs)
-                                                Nothing -> case caminoHastaM t2 x of  
-                                                           Just xs' -> Just (e : xs')
-                                                           Nothing -> Nothing
-NO HECHO
--}
+caminoHastaM = foldT (const Nothing) (\x f g y -> if y == x then Just [x] else 
+                                                case f y of 
+                                                Just xs -> Just (y : xs)
+                                                Nothing -> case g y of  
+                                                           Just xs' -> Just (y : xs')
+                                                           Nothing -> Nothing)
+
 --e. Demostrar las siguientes propiedades utilizando las definiciones anteriores:
 
 --i. para todo f. sizeT . mapT f = sizeT
---ii. para todo f. para todo g. mapT f . mapT g = mapT (f . g)
---iii. foldT EmptyT NodeT = id
+{-
+¿para todo f. sizeT . mapT f = sizeT?
+ 
+Por ppio de ext t. ¿para todo t. para todo f. (sizeT . mapT f) t = sizeT t?
+                =                                                       (.)
+                para todo t. para todo f. sizeT (mapT f t) = sizeT t
+Sean  t :: Tree a, por ppio de ind. sobre la estructura de t, se verá que:
 
+
+Caso base, t = (EmptyT))
+    ¿sizeT (mapT f EmptyT)= sizeT EmptyT?
+CI1. t = (NodeT x t1 t2)
+    HI1) ¡sizeT (mapT f t1) = sizeT t1!
+    HI2) ¡sizeT (mapT f t2) = sizeT t2!
+    TI)  ¿sizeT (mapT f (NodeT x t1 t2)) = sizeT (NodeT x t1 t2)?
+
+Caso Base
+IZQ:
+sizeT (mapT f EmptyT)
+=                       (map)
+sizeT (foldT EmptyT (NodeT . f) EmptyT)
+=                        (foldT.1)
+sizeT EmptyT
+
+Vale para este Caso
+
+CI1. t = 
+sizeT (mapT f (NodeT x t1 t2)) 
+=                       (mapT)
+sizeT (foldT EmptyT (NodeT . f) (NodeT x t1 t2))
+=                            (foldT)   
+sizeT ((NodeT . f) x (foldT EmptyT (NodeT . f) t1) (foldT EmptyT (NodeT . f) t2))
+=                                                        (def. (.))
+sizeT (NodeT (f x) (foldT EmptyT (NodeT . f) t1) (foldT EmptyT (NodeT . f) t2))
+=                                                        (sizeT)   -- despliego a foldT
+foldT 0 g (NodeT (f x) (foldT EmptyT (NodeT . f) t1) (foldT EmptyT (NodeT . f) t2))
+=                                                        (foldT.2)
+g (f x) (foldT 0 g (foldT EmptyT (NodeT . f) t1)) (foldT 0 g (foldT EmptyT (NodeT . f) t2))
+=                                                        (aplico g / beta)
+1 + (foldT 0 g (foldT EmptyT (NodeT . f) t1)) + (foldT 0 g (foldT EmptyT (NodeT . f) t2))
+=                                                        (sizeT, al revés)
+1 + sizeT (foldT EmptyT (NodeT . f) t1) + sizeT (foldT EmptyT (NodeT . f) t2)
+=                                                        (mapT, al revés)
+1 + sizeT (mapT f t1) + sizeT (mapT f t2)
+=                                                        (HI1)
+1 + sizeT t1 + sizeT (mapT f t2)
+=                                                        (HI2)
+1 + sizeT t1 + sizeT t2
+
+
+Der
+sizeT (NodeT x t1 t2)
+=                       (sizeT)
+foldT 0 g (NodeT x t1 t2)
+=                       (foldT.2)
+g x (foldT 0 g t1) (foldT 0 g t2)
+=                       (aplico g / beta)
+1 + foldT 0 g t1 + foldT 0 g t2
+=                       (sizeT, al revés)
+1 + sizeT t1 + sizeT t2
+-}
+--ii. para todo f. para todo g. mapT f . mapT g = mapT (f . g)
+
+{-
+¿para todo f. para todo g. mapT f . mapT g = mapT (f . g)?
+
+Por ppio de ext t. ¿para todo t. (mapT f . mapT g) t = mapT (f . g) t?
+                =                                                       (.)
+                ¿para todo t. mapT f (mapT g t) = mapT (f . g) t?
+Sean t :: Tree a, por ppio de ind. sobre la estructura de t:
+
+Caso base, t = EmptyT
+    ¿mapT f (mapT g EmptyT) = mapT (f . g) EmptyT?
+CI. t = NodeT x t1 t2
+    HI1) ¡mapT f (mapT g t1) = mapT (f . g) t1!
+    HI2) ¡mapT f (mapT g t2) = mapT (f . g) t2!
+    TI)  ¿mapT f (mapT g (NodeT x t1 t2)) = mapT (f . g) (NodeT x t1 t2)?
+
+
+Caso Base
+IZQ:
+mapT f (mapT g EmptyT)
+=                       (mapT)        -- el de adentro
+mapT f (foldT EmptyT (NodeT . g) EmptyT)
+=                       (foldT.1)
+mapT f EmptyT
+=                       (mapT)
+foldT EmptyT (NodeT . f) EmptyT
+=                       (foldT.1)
+EmptyT
+
+DER:
+mapT (f . g) EmptyT
+=                       (mapT)
+foldT EmptyT (NodeT . (f . g)) EmptyT
+=                       (foldT.1)
+EmptyT
+
+Ambos lados dan EmptyT. Vale para este caso.
+
+
+CI.
+IZQ:
+mapT f (mapT g (NodeT x t1 t2))
+=                       (mapT)        -- el de adentro
+mapT f (foldT EmptyT (NodeT . g) (NodeT x t1 t2))
+=                       (foldT.2)
+mapT f ((NodeT . g) x (foldT EmptyT (NodeT . g) t1) (foldT EmptyT (NodeT . g) t2))
+=                       (def. (.))
+mapT f (NodeT (g x) (foldT EmptyT (NodeT . g) t1) (foldT EmptyT (NodeT . g) t2))
+=                       (mapT, al revés)   -- reconozco los folds como mapT g
+mapT f (NodeT (g x) (mapT g t1) (mapT g t2))
+=                       (mapT)        -- el de afuera
+foldT EmptyT (NodeT . f) (NodeT (g x) (mapT g t1) (mapT g t2))
+=                       (foldT.2)
+(NodeT . f) (g x) (foldT EmptyT (NodeT . f) (mapT g t1)) (foldT EmptyT (NodeT . f) (mapT g t2))
+=                       (def. (.))
+NodeT (f (g x)) (foldT EmptyT (NodeT . f) (mapT g t1)) (foldT EmptyT (NodeT . f) (mapT g t2))
+=                       (mapT, al revés)
+NodeT (f (g x)) (mapT f (mapT g t1)) (mapT f (mapT g t2))
+=                       (HI1)
+NodeT (f (g x)) (mapT (f . g) t1) (mapT f (mapT g t2))
+=                       (HI2)
+NodeT (f (g x)) (mapT (f . g) t1) (mapT (f . g) t2)
+
+DER:
+mapT (f . g) (NodeT x t1 t2)
+=                       (mapT)
+foldT EmptyT (NodeT . (f . g)) (NodeT x t1 t2)
+=                       (foldT.2)
+(NodeT . (f . g)) x (foldT EmptyT (NodeT . (f . g)) t1) (foldT EmptyT (NodeT . (f . g)) t2)
+=                       (def. (.))
+NodeT ((f . g) x) (foldT EmptyT (NodeT . (f . g)) t1) (foldT EmptyT (NodeT . (f . g)) t2)
+=                       (mapT, al revés)
+NodeT ((f . g) x) (mapT (f . g) t1) (mapT (f . g) t2)
+=                       (def. (.))
+NodeT (f (g x)) (mapT (f . g) t1) (mapT (f . g) t2)
+
+Ambos lados dan  NodeT (f (g x)) (mapT (f . g) t1) (mapT (f . g) t2).  Vale TI. 
+-}
+
+--iii. foldT EmptyT NodeT = id
+{-
+¿foldT EmptyT NodeT = id?
+
+Por ppio de ext t. ¿para todo t. foldT EmptyT NodeT t = id t?
+                =                                            (id)
+                ¿para todo t. foldT EmptyT NodeT t = t?
+Sean t :: Tree a, por ppio de ind. sobre la estructura de t:
+
+Caso base, t = EmptyT
+    ¿foldT EmptyT NodeT EmptyT = EmptyT?
+CI. t = NodeT x t1 t2
+    HI1) ¡foldT EmptyT NodeT t1 = t1!
+    HI2) ¡foldT EmptyT NodeT t2 = t2!
+    TI)  ¿foldT EmptyT NodeT (NodeT x t1 t2) = NodeT x t1 t2?
+
+
+Caso Base
+foldT EmptyT NodeT EmptyT
+=                       (foldT.1)
+EmptyT
+
+(y  id EmptyT = EmptyT  por def. de id).  Vale para este caso.
+
+
+CI.
+foldT EmptyT NodeT (NodeT x t1 t2)
+=                       (foldT.2)
+NodeT x (foldT EmptyT NodeT t1) (foldT EmptyT NodeT t2)
+=                       (HI1)
+NodeT x t1 (foldT EmptyT NodeT t2)
+=                       (HI2)
+NodeT x t1 t2
+
+(y  id (NodeT x t1 t2) = NodeT x t1 t2  por def. de id).  Vale TI.  ∎
+-}
 
 --Ejercicio 4) Dadas las siguientes definiciones para representar mapas con diferentes
 --puntos de interés que pueden presentar objetos:
 
-data Dir = Left | Right | Straight
+data Dir = Izq | Der | Rect
 data Mapa a = Cofre [a]
-| Nada (Mapa a)
-| Bifurcacion [a] (Mapa a) (Mapa a)
+    | Bifurcacion [a] (Mapa a) (Mapa a)
+    | Nada (Mapa a)
 
 --a. Dar el tipo y definir foldM y recM, que expresan los esquemas de recursión
 --estructural y primitiva, respectivamente, para la estructura Mapa.
 
-foldM :: ([a] -> b) -> (b -> b -> b) -> ([a] -> b -> b -> b) -> Mapa a -> b
+foldM :: ([a] -> b) -> (b -> b) -> ([a] -> b -> b -> b) -> Mapa a -> b
 foldM f g h (Cofre xs) = f xs
 foldM f g h (Nada m) = g (foldM f g h m) 
 foldM f g h (Bifurcacion xs m1 m2) = h xs (foldM f g h m1) (foldM f g h m2)  
@@ -351,83 +598,277 @@ recM f g h (Cofre xs)             = f xs
 recM f g h (Nada m)               = g m (recM f g h m)
 recM f g h (Bifurcacion xs m1 m2) = h xs m1 m2 (recM f g h m1) (recM f g h m2)
 
-{-INICIO
 --b. Definir las siguientes funciones sin utilizar recursión explícita, utilizando el
 --esquema de recursión estructural o primitiva sobre Mapa según corresponda::
 
 --i.que describe la lista de todos los
 --objetos presentes en el mapa dado.
-objects :: Mapa a -> [a] 
 
---ii. que transforma los
---objetos del mapa dado aplicando la función dada.
-mapM :: (a -> b) -> Mapa a -> Mapa b
+--foldM :: ([a] -> [a]) -> ([a] -> [a]) -> ([a] -> [a] -> [a] -> [a]) -> Mapa a -> [a]
+objects :: Mapa a -> [a]
+objects = foldM id id (\ys ys1 ys2 -> ys ++ ys1 ++ ys2)
+
+--ii. que transforma los objetos del mapa dado aplicando la función dada.
+--foldM :: ([a] -> (a -> b) -> Mapa b )
+--       -> (((a -> b) -> Mapa b) -> (a -> b) -> Mapa b)
+--       -> ([a] -> ((a -> b) -> Mapa b) -> ((a -> b) -> Mapa b) -> (a -> b) -> Mapa b) 
+--       -> Mapa a 
+--       -> ((a -> b) -> Mapa b)
+--mapM :: Mapa a -> (a -> b) -> Mapa b 
+mapM :: (a -> b) -> Mapa a -> Mapa b 
+mapM = flip (foldM (\xs g -> Cofre (map g xs)) 
+                   (Nada .) -- <- (\g -> Nada . g) <- (\g f -> Nada (g f)) 
+                   (\xs f g h -> Bifurcacion (map h xs) (f h) (g h)))
 
 --iii. que indica si existe
 --algún objeto que cumpla con la condición dada en el mapa dado.
-has :: (a -> Bool) -> Mapa a -> Bool 
+
+--foldM :: ([a] -> (a -> Bool) -> Bool) 
+--          -> (((a -> Bool) -> Bool) -> (a -> Bool) -> Bool) 
+--          -> ([a] -> ((a -> Bool) -> Bool) -> ((a -> Bool) -> Bool) -> (a -> Bool) -> Bool)
+--          -> Mapa a
+--          -> ((a -> Bool) -> Bool)
+
+--has :: Mapa a -> (a -> Bool) -> Bool 
+has :: (a -> Bool) -> Mapa a -> Bool
+has = flip (foldM (\xs f -> any f xs ) (\f g -> f g) (\xs f g h -> any h xs || g h || f h))
 
 --iv. que indica si un objeto al final del camino dado cumple con la
 --condición dada en el mapa dado.
+
+
+--foldM :: ([a] -> (a->Bool) -> [Dir] -> Bool) 
+--       -> (((a->Bool) -> [Dir] -> Bool) -> (a->Bool) -> [Dir] -> Bool) 
+--       -> ([a] -> ((a->Bool) -> [Dir] -> Bool) -> ((a->Bool) -> [Dir] -> Bool) -> (a->Bool) -> [Dir] -> Bool) 
+--       -> Mapa a 
+--       -> ((a->Bool) -> [Dir] -> Bool)
+-- hasObjectAt ::  Mapa a -> ((a->Bool) -> [Dir] -> Bool)
 hasObjectAt :: (a->Bool) -> Mapa a -> [Dir] -> Bool
+hasObjectAt = flip (foldM (\xs f ds -> if null ds then any f xs else error "")
+                          (\f g ds -> if null ds then error "" else 
+                            case head ds of
+                            Rect -> f g (tail ds)
+                            _ -> error "")
+                          (\xs f g h ds -> if null ds then error "" else 
+                            case head ds of
+                            Izq -> f h (tail ds)
+                            Der -> g h (tail ds)
+                            _ -> error ""))
 
 --v. que describe el camino más
 --largo en el mapa dado.
+
+--foldM :: ([a] -> [Dir]) -> ([Dir] -> [Dir]) -> ([a] -> [Dir] -> [Dir] -> [Dir]) -> Mapa a -> [Dir]
 longestPath :: Mapa a -> [Dir] 
+longestPath = foldM (const []) (\ds -> Rect:ds) (\_ ds1 ds2 -> if length ds1 > length ds2 then Izq : ds1 else Der : ds2)
 
 --vi.que describe la lista con los objetos presentes en el
 -- camino más largo del mapa dado.
 objectsOfLongestPath :: Mapa a -> [a] 
+objectsOfLongestPath = foldM id id (\xs ds1 ds2 -> if length ds1 > length ds2 then xs ++ ds1 else xs ++ ds2)
 
 --vii. que describe la lista con
 --todos los caminos del mapa dado.
+
+--foldM :: ([a] -> [[Dir]]) -> ([[Dir]] -> [[Dir]]) -> ([a] -> [[Dir]] -> [[Dir]] -> [[Dir]]) -> Mapa a -> [[Dir]]
 allPaths :: Mapa a -> [[Dir]]
+allPaths = foldM (const []) (\dss -> agregarCamino' dss Rect) (\_ dss1 dss2 -> agregarCamino' dss1 Izq ++ agregarCamino' dss2 Der)
+
+agregarCamino' :: [[Dir]] -> Dir -> [[Dir]]
+agregarCamino' [] _ = []
+agregarCamino' (xs:xss) y = (y : xs) : agregarCamino' xss y
 
 --viii. que describe la lista
 --con todos los objetos por niveles del mapa dado.
 objectsPerLevel :: Mapa a -> [[a]]
+objectsPerLevel = foldM (\xs -> [xs]) id (\xs dss1 dss2 -> [xs] ++ juntarNiveles dss1 dss2)
 
 --c. Demostrar la siguiente propiedad:
 --para todo x. has (==x) = any (elem x) . objectsPerLevel
 
---Ejercicio 5) Dada la siguiente definición para representar árboles generales:
-data GTree a = GNode a [GTree a]
---a. Dar tipo y definir las tres versiones de foldGT y recGT, que expresan los
---esquemas de recursión estructural y primitiva, respectivamente, para la
---estructura GTree.
---ATENCIÓN: recordar que no siguen la secuencia dada para tipos recurslvos
---con recursión directa, porque la recursión en GTree NO es directa. Estas
---versiones deben tener en cuenta el esquema de recursión sobre listas
---correspondiente, como se trató en clase teórica.
+{-
+¿para todo x. has (==x) = any (elem x) . objectsPerLevel?
 
---b. Definir las siguientes funciones sin utilizar recursión explícita:
-i. mapGT :: (a -> b) -> GTree a -> GTree b
-ii. sumGT :: GTree Int -> Int
-iii. sizeGT :: GTree a -> Int
-iv. heightGT :: GTree a -> Int
-v. preOrderGT :: GTree a -> [a]
-vi. postOrderGT :: GTree a -> [a]
-vii. mirrorGT :: GTree a -> GTree a
-viii. countByGT :: (a -> Bool) -> GTree a -> Int
-ix. partitionGT :: (a -> Bool) -> GTree a -> ([a], [a])
-x. zipWithGT :: (a->b->c) -> GTree a -> GTree b -> GTree c
-xi. caminoMasLargoGT :: GTree a -> [a]
-xii. todosLosCaminosGT :: GTree a -> [[a]]
-xiii. todosLosNivelesGT :: GTree a -> [[a]]
-xiv. caminoHastaGT :: Eq a => a -> GTree a -> [a]
-xv. nivelNGT :: GTree a -> Int -> [a]
+Por ppio de ext m. ¿para todo m. para todo x. has (==x) m = (any (elem x) . objectsPerLevel) m?
+                =                                                                          (.)
+                ¿para todo m. para todo x. has (==x) m = any (elem x) (objectsPerLevel m)?
 
---Ejercicio 6) Dadas las siguientes definiciones para representar un sistema de
-archivos:
+Fijo x arbitrario. Abrevio los argumentos de los folds:
+  has            = flip (foldM cf cn cb)
+     cf = \xs f -> any f xs
+     cn = \f g -> f g
+     cb = \xs f g h -> any h xs || g h || f h
+  objectsPerLevel = foldM pf pn pb
+     pf = \xs -> [xs]
+     pn = id
+     pb = \xs dss1 dss2 -> [xs] ++ juntarNiveles dss1 dss2
+
+Observación (desplegar has): por def. de has y de flip,
+  has (==x) m = flip (foldM cf cn cb) (==x) m = foldM cf cn cb m (==x)
+
+Sea m :: Mapa a, por ppio de ind. sobre la estructura de m:
+
+
+====================  Caso m = Cofre xs  ====================
+IZQ:
+has (==x) (Cofre xs)
+=                    (def. has / flip)
+foldM cf cn cb (Cofre xs) (==x)
+=                    (foldM.1)
+cf xs (==x)
+=                    (def. cf, beta)
+any (==x) xs
+=                    (elem, al revés)
+elem x xs
+
+DER:
+any (elem x) (objectsPerLevel (Cofre xs))
+=                    (def. objectsPerLevel)
+any (elem x) (foldM pf pn pb (Cofre xs))
+=                    (foldM.1)
+any (elem x) (pf xs)
+=                    (def. pf)
+any (elem x) [xs]
+=                    (any.2)
+elem x xs || any (elem x) []
+=                    (any.1)
+elem x xs || False
+=
+elem x xs
+
+Ambos lados dan  elem x xs.  Vale este caso.
+
+
+====================  Caso m = Nada m'  ====================
+HI) has (==x) m' = any (elem x) (objectsPerLevel m')
+
+IZQ:
+has (==x) (Nada m')
+=                    (def. has / flip)
+foldM cf cn cb (Nada m') (==x)
+=                    (foldM.2)
+cn (foldM cf cn cb m') (==x)
+=                    (def. cn, beta)   -- cn f g = f g
+(foldM cf cn cb m') (==x)
+=                    (def. has, al revés)
+has (==x) m'
+=                    (HI)
+any (elem x) (objectsPerLevel m')
+
+DER:
+any (elem x) (objectsPerLevel (Nada m'))
+=                    (def. objectsPerLevel)
+any (elem x) (foldM pf pn pb (Nada m'))
+=                    (foldM.2)
+any (elem x) (pn (foldM pf pn pb m'))
+=                    (def. pn = id)
+any (elem x) (foldM pf pn pb m')
+=                    (def. objectsPerLevel, al revés)
+any (elem x) (objectsPerLevel m')
+
+Ambos lados dan  any (elem x) (objectsPerLevel m').  Vale este caso.
+
+
+====================  Caso m = Bifurcacion xs m1 m2  ====================
+HI1) has (==x) m1 = any (elem x) (objectsPerLevel m1)
+HI2) has (==x) m2 = any (elem x) (objectsPerLevel m2)
+
+IZQ:
+has (==x) (Bifurcacion xs m1 m2)
+=                    (def. has / flip)
+foldM cf cn cb (Bifurcacion xs m1 m2) (==x)
+=                    (foldM.3)
+cb xs (foldM cf cn cb m1) (foldM cf cn cb m2) (==x)
+=                    (def. cb, beta)   -- cb ys f g h = any h ys || g h || f h
+any (==x) xs || (foldM cf cn cb m2) (==x) || (foldM cf cn cb m1) (==x)
+=                    (def. has, al revés)
+any (==x) xs || has (==x) m2 || has (==x) m1
+=                    (elem, al revés)
+elem x xs || has (==x) m2 || has (==x) m1
+=                    (HI2, HI1)
+elem x xs || any (elem x) (objectsPerLevel m2) || any (elem x) (objectsPerLevel m1)
+
+DER:
+any (elem x) (objectsPerLevel (Bifurcacion xs m1 m2))
+=                    (def. objectsPerLevel)
+any (elem x) (foldM pf pn pb (Bifurcacion xs m1 m2))
+=                    (foldM.3)
+any (elem x) (pb xs (foldM pf pn pb m1) (foldM pf pn pb m2))
+=                    (def. pb)
+any (elem x) ([xs] ++ juntarNiveles (objectsPerLevel m1) (objectsPerLevel m2))
+=                    (any.++)
+any (elem x) [xs] || any (elem x) (juntarNiveles (objectsPerLevel m1) (objectsPerLevel m2))
+=                    (any.2, any.1)
+elem x xs || any (elem x) (juntarNiveles (objectsPerLevel m1) (objectsPerLevel m2))
+=                    (LEMA L)
+elem x xs || any (elem x) (objectsPerLevel m1) || any (elem x) (objectsPerLevel m2)
+
+Comparo:
+IZQ = elem x xs || any (elem x) (objectsPerLevel m2) || any (elem x) (objectsPerLevel m1)
+DER = elem x xs || any (elem x) (objectsPerLevel m1) || any (elem x) (objectsPerLevel m2)
+
+Coinciden por conmutatividad de ||.  Vale TI.   
+
+LEMA L: para todo x. para todo A, B :: [[a]].
+        any (elem x) (juntarNiveles A B) = any (elem x) A || any (elem x) B
+
+Por ind. sobre la estructura de A:
+
+Caso A = []
+  any (elem x) (juntarNiveles [] B)
+  =                      (jN.1)
+  any (elem x) B
+  =                      (any.1, al revés)  -- False || y = y
+  any (elem x) [] || any (elem x) B                      
+
+Caso A = (as:ass)
+  HI) para todo B'. any (elem x) (juntarNiveles ass B') = any (elem x) ass || any (elem x) B'
+
+  Subcaso B = []
+    any (elem x) (juntarNiveles (as:ass) [])
+    =                    (jN.2)
+    any (elem x) (as:ass)
+    =                    (any.1, al revés)
+    any (elem x) (as:ass) || any (elem x) []             
+
+  Subcaso B = (bs:bss)
+    any (elem x) (juntarNiveles (as:ass) (bs:bss))
+    =                    (jN.3)
+    any (elem x) ((as++bs) : juntarNiveles ass bss)
+    =                    (any.2)
+    elem x (as++bs) || any (elem x) (juntarNiveles ass bss)
+    =                    (elem x sobre ++)   -- elem x (as++bs) = elem x as || elem x bs
+    (elem x as || elem x bs) || any (elem x) (juntarNiveles ass bss)
+    =                    (HI con B' = bss)
+    (elem x as || elem x bs) || (any (elem x) ass || any (elem x) bss)
+
+    y el lado que quiero:
+    any (elem x) (as:ass) || any (elem x) (bs:bss)
+    =                    (any.2 dos veces)
+    (elem x as || any (elem x) ass) || (elem x bs || any (elem x) bss)
+
+    Ambos coinciden por asociatividad/conmutatividad de ||.   
+-}
+-- ========================================================================================
+--ARBOL GENERAL NO HECHO
+--Ejercicio 6) Dadas las siguientes definiciones para representar un sistema de archivos:
+
 type Name = String
 type Content = String
 type Path = [Name]
 data FileSystem = File Name Content
-| Folder Name [FileSystem]
+    | Folder Name [FileSystem]
+
 
 --a. Definir foldFS y recFS, que expresan la recursión estructural y primitiva,
 --respectivamente, para la estructura FileSystem.
 
+--map :: (a -> b) -> [a] -> [b]
+--map :: (FileSystem -> b) -> [FileSystem] -> [b]
+--            foldFS f g      fs
+foldFS
+
+{-
 --b. Definir las siguientes funciones sin utilizar recursión explícita, utilizando el
 --esquema de recursión estructural o primitiva sobre FileSystem según
 --corresponda:
@@ -452,7 +893,7 @@ mapContents :: (Content -> Content) -> FileSystem -> FileSystem
 asociada a cada archivo en la lista dada.
 targetedMapContents :: [(Name, Content -> Content)] -> FileSystem -> FileSystem, que describe el filesystem
 
-TERMINA-}
+-}
 
 -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- 
 --FUNCIONES AUXILIARES
@@ -464,143 +905,5 @@ unoSi True = 1
 unoSi False = 0
 
 
+-- (f . g) x = f (g x)
 -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- -- ++ -- 
-
-
--- * * * * * * *  * * * * * * * *  * * * * * * * *  * * * * * * * *  * * * * * * * *  * * * * * * * *  * * * * * * * *  * * * * * * * *  * 
-
-{-
-EJERCICIOS ADICIONALES (innecesariamente complejos)
-Ejercicio 7) Dada la siguiente definición:
-type Record f v = [(f,v)]
-donde la idea de este tipo es representar una fila de una base de datos (el valor de
-tipo f es el nombre del campo, y el valor de tipo v es el valor de ese campo). Por
-ejemplo, para representar una fila de una base de datos de personas, se puede usar
-el siguiente dato:
-[("nombre","Grace"),("apellido","H"),("edad", "42"),("género","F"),("salario","120")] ::
-Record String String
-Con esto, puede definirse el tipo:
-type Table f v = [ Record f v ]
-donde se entiende que una tabla de una base de datos está compuesta por muchos
-registros, y se espera que todos compartan los mismos “campos” (o sea, los valores
-de tipo a en cada registro). Por ejemplo:
-personas =
-[
-[("nombre","Graciela"),("apellido","H")
-,("edad", "42"),("género","F"),("salario","120")]
-, [("nombre","Alonso"),("apellido","Ch")
-,("edad", "35"),("género","M"),("salario","250")]
-, [("nombre","Adela"),("apellido","G")
-,("edad", "39"),("género","F"),("salario","130")]
-, [("nombre","Fer"),("apellido","R")
-,("edad", "22"),("género","X"),("salario","100")]
-, [("nombre","Felipe"),("apellido","W")
-,("edad", "50"),("género","M"),("salario","280")]
-]
-Definir las siguientes funciones sin utilizar recursión estructural explícita:
-a. select :: (Record f v -> Bool) -> Table f v -> Table f v,
-que a partir de la lista de registros dada describe la lista de los registros que
-cumplen con la condición dada.
-Por ejemplo,
-select (\r -> elem ("género", "F") r)
-selecciona todos los registros de personas de género femenino.
-Otro ejemplo es
-select (\r -> any (\(c,v) -> c=="salario"
-&& str2num v < 200) r)
-que selecciona todos los registros de personas con salarios por debajo de
-200.
-Página 6 de 9
-Programación Funcional
-b. project :: (f -> Bool) -> Table f v -> Table f v, que a partir
-de la lista de registros dada describe la lista de registros solo con los campos
-que cumplen la condición dada.
-Por ejemplo,
-project (\f -> f=="nombre" || f=="apellido")
-selecciona los campos nombre y apellido de un tabla.
-c. conjunct :: (a -> Bool) -> (a -> Bool) -> a -> Bool, que
-describe el predicado que da True solo cuando los dos predicados dados lo
-hacen.
-Por ejemplo
-conjunt (=="nombre") (=="apellido")
-es otra forma de escribir la condición del ejemplo anterior.
-d. crossWith :: (a -> b -> c) -> [a] -> [b] -> [c], que describe
-el resultado de aplicar una función a cada elemento del producto cartesiano
-de las dos listas dadas.
-Por ejemplo
-crossWith (+) [1,2,3] [10,20]
-da como resultado
-[11,21,12,22,13,23].
-e. product :: Table f v -> Table f v -> Table f v, que describe
-la lista de registros resultante del producto cartesiano combinado de las dos
-listas de registros dadas. Es decir, la unión de los campos en los registros del
-producto cartesiano.
-Por ejemplo
-product
-[
-[("apellido","W"),("idMat","42")]
-,[("apellido","G"),("idMat","17")]
-]
-[
-[("idMat", "17"),("nomMat","PO")]
-,[("idMat","666"),("nomMat","PI")]
-,[("idMat", "42"),("nomMat","PF")]
-]
-da como resultado
-[
-[("apellido","W"),("idMat","42")
-,("idMat", "17"),("nomMat","PO")]
-,[("apellido","W"),("idMat","42")
-,("idMat","666"),("nomMat","PI")]
-,[("apellido","W"),("idMat","42")
-,("idMat", "42"),("nomMat","PF")]
-,[("apellido","G"),("idMat","17")
-,("idMat", "17"),("nomMat","PO")]
-,[("apellido","G"),("idMat","17")
-,("idMat","666"),("nomMat","PI")]
-Página 7 de 9
-Programación Funcional
-,[("apellido","G"),("idMat","17")
-,("idMat", "42"),("nomMat","PF")]
-]
-f. similar :: Record f v -> Record f v, que describe el registro
-resultante de descartar datos cuyos campos sean iguales (o sea, el mismo
-dato asociado al mismo campo).
-Por ejemplo,
-similar
-[("apellido","W"),("idMat","42")
-,("idMat","42"),("nombreMat","PF")]
-da como resultado
-[("apellido","W"),("idMat","42")
-,("nombreMat","PF")].
-Ejercicio 8) Una expresión del cálculo relacional de tuplas permite expresar consultas
-sobre un modelo relacional con los siguientes componentes:
-data Query f v
-= Table [Record f v] -- Table (Table f v)
-| Product (Query f v) (Query f v)
-| Projection (f -> Bool) (Query f v)
-| Selection (Record f v -> Bool) (Query f v)
-Este modelo es utilizado para estudiar y manipular las consultas hechas a motores
-de bases de datos. En este contexto vemos a cada registro como una fila y a cada
-elemento como un par columna-valor. Por ejemplo:
-Projection
-(\f -> f== "nombre" || f=="apellido")
-(Selection
-(conjunct (\r -> any (\(c,v)-> c == "salario"
-&& str2num v > 200) r) (\r -> elem
-("género", "F") r))
-(Table personas))
-describe la tabla con los nombres y apellidos de todas las personas de género femenino con
-salarios altos.
-a. Dar el tipo y definir la función foldQ, que expresa el esquema de recursión
-estructural para la estructura Query.
-a. Definir las siguientes funciones sin utilizar recursión explícita:
-i. tables :: Query a b -> [Table a b], que describe la lista de
-todas las tablas involucradas en la query dada.
-ii. execute :: Query a b -> Table a b, que describe el
-resultado de ejecutar la query dada.
-iii. compact :: Query a b -> Query a b, que describe la query
-resultante de compactar las selecciones y proyecciones consecutivas
-en la query dada.
-b. Demostrar la siguiente propiedad:
-execute . compact = execute
--}
